@@ -137,8 +137,8 @@ html[data-style=contraste] .lbl{display:block;font-size:max(2.6vmin,11px);font-w
 #settings .btn.mini{height:44px;padding:0 16px;font-size:13px;border-color:var(--plomo);color:var(--plomo)}
 #settings .btn.mini.on{border-color:var(--azul);color:var(--ink2);box-shadow:0 0 16px var(--azul-a40)}
 #settings .btn.mini:disabled{opacity:.35}
-#folderName{color:var(--ink2);font-size:18px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-#count{color:var(--plomo);font-size:14px;letter-spacing:.04em}
+#folderName,#lyFolder{color:var(--ink2);font-size:18px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#count,#lyCount{color:var(--plomo);font-size:14px;letter-spacing:.04em}
 #nota{color:var(--plomo);font-size:12px}
 
 .sw.sel .dot{outline:3px solid var(--azul);outline-offset:3px}
@@ -153,6 +153,46 @@ html[data-style=contraste] .lbl{display:block;font-size:max(2.6vmin,11px);font-w
 .prow input[type=range]{flex:1;max-width:58%;accent-color:var(--azul)}
 .pv{min-width:52px;text-align:right;color:var(--plomo);font-size:13px}
 .hint{color:var(--plomo);font-size:13px;line-height:1.4}
+
+/* ---------- Letra inferior ---------- */
+#app.hasLy{grid-template-rows:auto minmax(0,1fr) auto}
+#lyric{display:flex;align-items:center;justify-content:center;gap:12px;min-height:max(8.5vmin,40px)}
+#lyric[hidden]{display:none}
+#lyricLine{flex:1;min-width:0;text-align:center;font-size:max(4.6vmin,18px);font-weight:500;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  background:linear-gradient(90deg,var(--ink1),var(--ink2));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent}
+#lyricLine.dim{opacity:.6;font-size:max(3.2vmin,13px)}
+#lyricLine.pop{animation:lypop .35s ease-out}
+@keyframes lypop{from{opacity:.2;transform:translateY(5px)}to{opacity:1;transform:none}}
+#bLyEdit{flex:none;height:max(7vmin,38px);padding:0 16px;font-size:max(2.6vmin,11px);font-weight:600;letter-spacing:.14em;border-width:1.5px;border-color:var(--plomo);color:var(--plomo)}
+
+/* ---------- Efectos de ambiente ---------- */
+#fxBack,#fxFront{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;display:none}
+#fxBack{z-index:0}
+#fxFront{z-index:5}
+
+/* ---------- Editor de letras ---------- */
+#editor{position:fixed;inset:0;z-index:12;display:flex;flex-direction:column;
+  background:radial-gradient(ellipse 90% 110% at 50% 115%,var(--glow) 0%,var(--bg1) 55%,var(--bg0) 100%)}
+#editor[hidden]{display:none}
+#eHead{display:flex;align-items:center;gap:10px;padding:max(10px,env(safe-area-inset-top)) max(18px,env(safe-area-inset-right)) 8px max(18px,env(safe-area-inset-left))}
+#eTitle{margin:0;flex:1;min-width:0;font-size:max(4.2vmin,18px);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  background:linear-gradient(90deg,var(--ink1),var(--ink2));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+#eBar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:0 max(18px,env(safe-area-inset-right)) 8px max(18px,env(safe-area-inset-left))}
+#editor .btn{height:46px;border-width:2px;padding:0 16px;font-size:13px;font-weight:600;letter-spacing:.06em;box-shadow:none;flex:none}
+#editor .btn.big{height:56px;font-size:16px;padding:0 26px;border-color:var(--azul);color:var(--ink2);box-shadow:0 0 18px var(--azul-a40)}
+#editor .btn.mini{border-color:var(--plomo);color:var(--plomo)}
+#eClock{font-variant-numeric:tabular-nums;color:var(--ink2);font-size:20px;min-width:96px;text-align:center}
+#eList{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;display:flex;flex-direction:column;gap:6px;
+  padding:4px max(18px,env(safe-area-inset-right)) 12px max(18px,env(safe-area-inset-left))}
+.erow{display:flex;gap:8px;align-items:center;border:2px solid transparent;border-radius:16px;padding:4px}
+.erow.sel{border-color:var(--azul);background:var(--azul-a12)}
+.et{flex:none;width:108px;height:42px;border-radius:12px;border:2px solid var(--plomo);background:none;color:var(--ink1);font:inherit;font-size:14px;font-variant-numeric:tabular-nums;cursor:pointer}
+.et.none{color:var(--plomo);border-style:dashed}
+.etx{flex:1;min-width:0;height:42px;border-radius:12px;border:2px solid var(--borde-a22);background:rgba(0,0,0,.35);color:var(--ink1);font:inherit;font-size:16px;padding:0 12px;-webkit-user-select:text;user-select:text}
+#ePasteBox{flex:1;margin:0 max(18px,env(safe-area-inset-right)) 8px max(18px,env(safe-area-inset-left));border-radius:16px;border:2px solid var(--borde-a22);background:rgba(0,0,0,.45);
+  color:var(--ink1);font:inherit;font-size:16px;padding:12px;resize:none;-webkit-user-select:text;user-select:text}
+#ePasteBox[hidden],#eList[hidden]{display:none}
+#eMsg{padding:4px max(18px,env(safe-area-inset-right)) max(8px,env(safe-area-inset-bottom)) max(18px,env(safe-area-inset-left));color:var(--plomo);font-size:13px;min-height:30px}
 #presets{display:flex;flex-wrap:wrap;gap:10px 14px}
 .sw{background:none;border:0;color:var(--plomo);font:inherit;font-size:12px;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;padding:4px;min-width:62px}
 .sw .dot{width:48px;height:48px;border-radius:50%;border:3px solid #fff}
@@ -185,6 +225,8 @@ html[data-style=contraste] .lbl{display:block;font-size:max(2.6vmin,11px);font-w
   <circle cx="500" cy="300" r="320" fill="none" stroke="url(#rg)" stroke-width="1.6"/>
   <circle cx="500" cy="300" r="200" fill="none" stroke="url(#rg)" stroke-width="1.6"/>
 </svg>
+
+<canvas id="fxBack" aria-hidden="true"></canvas>
 
 <div id="app">
   <div id="top">
@@ -235,7 +277,13 @@ html[data-style=contraste] .lbl{display:block;font-size:max(2.6vmin,11px);font-w
       <span class="lbl">Siguiente</span>
     </div>
   </div>
+  <div id="lyric" hidden>
+    <div id="lyricLine"></div>
+    <button class="btn" id="bLyEdit" aria-label="Editar letra">EDITAR</button>
+  </div>
 </div>
+
+<canvas id="fxFront" aria-hidden="true"></canvas>
 
 <div id="settings" hidden>
   <div id="sHead">
@@ -248,6 +296,26 @@ html[data-style=contraste] .lbl{display:block;font-size:max(2.6vmin,11px);font-w
       <div id="folderName">Sin carpeta</div>
       <div id="count"></div>
       <button class="btn main" id="bPick">ELEGIR CARPETA DE MÚSICA</button>
+    </section>
+
+    <section>
+      <div class="kicker">Letras</div>
+      <div id="lyFolder">Usando la carpeta de música</div>
+      <div id="lyCount"></div>
+      <button class="btn main" id="bPickLy">ELEGIR CARPETA DE LETRAS</button>
+      <div class="row">
+        <button class="btn mini" id="bLyOn">Mostrar letra: sí</button>
+        <button class="btn mini" id="bLyClear">Usar la carpeta de música</button>
+      </div>
+      <div class="hint">Archivos .lrc (o .txt) con el mismo nombre que la canción. Con el botón EDITAR de la pantalla principal puedes crear o corregir una letra y sincronizarla.</div>
+    </section>
+
+    <section>
+      <div class="kicker">Ambiente</div>
+      <div class="hint">Efectos que se mueven al ritmo (BPM) que elijas. No analizan el audio real y solo se animan mientras suena la música. En Neón y Discoteca los colores cambian solos.</div>
+      <div id="fxModes" class="row"></div>
+      <label class="prow"><span>Ritmo</span><input type="range" id="bpm" min="50" max="200" step="1"><span class="pv" id="bpmv"></span></label>
+      <div class="row"><button class="btn mini" id="bTap">Marcar ritmo (toca 4 veces)</button></div>
     </section>
 
     <section>
@@ -283,6 +351,30 @@ html[data-style=contraste] .lbl{display:block;font-size:max(2.6vmin,11px);font-w
   </div>
   <input type="file" id="dir" webkitdirectory multiple hidden>
   <input type="file" id="imgIn" accept="image/*" hidden>
+  <input type="file" id="lyIn" webkitdirectory multiple hidden>
+</div>
+
+<div id="editor" hidden>
+  <div id="eHead">
+    <h1 id="eTitle">Editar letra</h1>
+    <button class="btn big" id="eSave">GUARDAR</button>
+    <button class="btn mini" id="eClose">CERRAR</button>
+  </div>
+  <div id="eBar">
+    <button class="btn mini" id="ePlay">TOCAR / PAUSA</button>
+    <button class="btn mini" id="eBack5">−5 s</button>
+    <span id="eClock">00:00.00</span>
+    <button class="btn big" id="eMark">MARCAR LÍNEA</button>
+    <button class="btn mini" id="eMinus">−0,2 s</button>
+    <button class="btn mini" id="ePlus">+0,2 s</button>
+    <button class="btn mini" id="eAdd">+ LÍNEA</button>
+    <button class="btn mini" id="eDel">BORRAR</button>
+    <button class="btn mini" id="ePaste">PEGAR TEXTO</button>
+    <button class="btn mini" id="eDown" style="display:none">DESCARGAR .LRC</button>
+  </div>
+  <div id="eList"></div>
+  <textarea id="ePasteBox" hidden placeholder="Una línea de letra por renglón"></textarea>
+  <div id="eMsg"></div>
 </div>
 
 <script>
@@ -314,8 +406,8 @@ html[data-style=contraste] .lbl{display:block;font-size:max(2.6vmin,11px);font-w
   const rgba = (h, a) => { const [r, g, b] = hex2(h); return 'rgba(' + r + ',' + g + ',' + b + ',' + a + ')'; };
   const colors = () => Object.assign({}, DEF, store.get('colors', {}));
 
-  function applyColors() {
-    const c = colors(), s = document.documentElement.style;
+  function applyColors(ov) {
+    const c = ov ? Object.assign({}, colors(), ov) : colors(), s = document.documentElement.style;
     const glow = mix(c.bg, c.accent, .14);
     s.setProperty('--bg0', c.bg);
     s.setProperty('--glow', glow);
@@ -605,6 +697,7 @@ html[data-style=contraste] .lbl{display:block;font-size:max(2.6vmin,11px);font-w
     store.set('lastIdx', i);
     if (!fromHistory) { hist.push(i); if (hist.length > 200) hist.shift(); }
     setTitle(cleanName(tracks[i].name));
+    loadLyricsFor(i);
     try {
       if (native) {
         await MF.play({ uri: tracks[i].uri });
@@ -714,9 +807,400 @@ html[data-style=contraste] .lbl{display:block;font-size:max(2.6vmin,11px);font-w
 
   $('dir').onchange = e => {
     loadWebFiles(e.target.files);
+    lyAddWebFiles(e.target.files);
     folderChanged();
     updateSettingsInfo();
     if (tracks.length) { closeSettings(); startMode(); } else $('count').textContent = 'No se encontraron pistas de audio';
+  };
+
+
+  /* =====================  LETRAS (.lrc)  ===================== */
+  const LY = { map: new Map(), cur: null, idx: -1, webFiles: [], ready: Promise.resolve() };
+  const normKey = n => n.replace(/\.[^.]+$/, '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+  const lyOn = () => store.get('lyOn', true) !== false;
+  const lyEdits = () => store.get('lyEdits', {});
+  const baseOf = n => n.replace(AUDIO_EXT, '');
+  const fmtT = t => { t = Math.max(0, t); const m = Math.floor(t / 60), sec = t - m * 60; return String(m).padStart(2, '0') + ':' + (sec < 10 ? '0' : '') + sec.toFixed(2); };
+
+  async function getPos() {
+    try { if (native) { const r = await MF.position(); return r.pos || 0; } return audio.currentTime * 1000; }
+    catch (e) { return 0; }
+  }
+
+  function parseLyrics(text) {
+    const lines = [], plain = []; let synced = false;
+    String(text || '').split(/\r?\n/).forEach(raw => {
+      if (/^\s*\[(offset|ti|ar|al|by|au|length|re|ve|la|#)[^\]]*\]\s*$/i.test(raw)) return;
+      const tagRe = /\[(\d{1,3}):(\d{1,2})(?:[.:](\d{1,3}))?\]/g;
+      const times = []; let m, last = 0;
+      while ((m = tagRe.exec(raw))) { times.push(+m[1] * 60 + +m[2] + (m[3] ? parseFloat('0.' + m[3]) : 0)); last = tagRe.lastIndex; }
+      const txt = raw.slice(last).replace(/<\d+:\d+(?:[.:]\d+)?>/g, '').trim();
+      if (times.length) { synced = true; times.forEach(t => lines.push({ t, text: txt })); }
+      else if (txt) plain.push(txt);
+    });
+    if (synced) { lines.sort((a, b) => a.t - b.t); return { lines, synced: true }; }
+    return { lines: plain.map(text => ({ t: null, text })), synced: false };
+  }
+
+  function lyAddWebFiles(fl) {
+    const keep = Array.from(fl).filter(f => /\.(lrc|txt)$/i.test(f.name));
+    if (!keep.length) return;
+    LY.webFiles = LY.webFiles.concat(keep);
+    LY.ready = loadLyricsIndex();
+  }
+
+  async function loadLyricsIndex() {
+    const map = new Map();
+    const add = (name, ref) => {
+      const k = normKey(name), ext = name.slice(name.lastIndexOf('.') + 1).toLowerCase();
+      const old = map.get(k); if (old && old.ext === 'lrc' && ext !== 'lrc') return;   // .lrc tiene prioridad sobre .txt
+      map.set(k, Object.assign({ ext, name }, ref));
+    };
+    if (native) {
+      const u = store.get('lyUri', null) || store.get('folderUri', null);
+      if (u) { try { const r = await MF.listLyrics({ uri: u }); (r.files || []).forEach(f => add(f.name, { uri: f.uri })); } catch (e) {} }
+    } else {
+      LY.webFiles.forEach(f => add(f.name, { file: f }));
+    }
+    LY.map = map;
+    updateLyInfo(); showLyricBar();
+  }
+
+  function showLyricBar() {
+    const want = lyOn() && (LY.map.size > 0 || !!store.get('lyUri', null) || Object.keys(lyEdits()).length > 0);
+    $('lyric').hidden = !want;
+    $('app').classList.toggle('hasLy', want);
+    lastD = 0; schedFit();
+  }
+
+  function updateLyInfo() {
+    const n = store.get('lyName', '');
+    $('lyFolder').textContent = n ? n : 'Usando la carpeta de música';
+    $('lyCount').textContent = LY.map.size ? LY.map.size + ' archivos de letra encontrados' : '';
+    $('bLyOn').textContent = 'Mostrar letra: ' + (lyOn() ? 'sí' : 'no');
+    $('bLyOn').classList.toggle('on', lyOn());
+  }
+
+  function setLyric(txt, dim) {
+    const el = $('lyricLine');
+    if (el.textContent === txt && el.classList.contains('dim') === !!dim) return;
+    el.textContent = txt; el.classList.toggle('dim', !!dim);
+    el.classList.remove('pop'); void el.offsetWidth; el.classList.add('pop');
+  }
+
+  async function readLyricText(key) {
+    const ed = lyEdits();
+    if (ed[key] != null) return { text: ed[key], local: true };
+    const ref = LY.map.get(key); if (!ref) return { text: null };
+    try { return { text: native ? (await MF.readText({ uri: ref.uri })).text : await ref.file.text() }; }
+    catch (e) { return { text: null }; }
+  }
+
+  async function loadLyricsFor(i) {
+    LY.cur = null; LY.idx = -1; setLyric('');
+    if (!lyOn() || !tracks[i]) return;
+    const key = normKey(tracks[i].name);
+    await LY.ready;
+    const r = await readLyricText(key);
+    if (cur !== i) return;                                 // la pista cambió mientras se leía
+    LY.cur = Object.assign({ key, has: r.text != null }, parseLyrics(r.text));
+    if (LY.cur.has && !LY.cur.synced && LY.cur.lines.length) setLyric('Letra sin tiempos: toca EDITAR para sincronizarla', true);
+  }
+
+  async function lyricTick() {
+    const c = LY.cur; if (!c || !c.synced || !playing || !lyOn() || !$('editor').hidden) return;
+    const ms = (await getPos()) + 150;
+    let k = -1;
+    for (let j = 0; j < c.lines.length; j++) { if (c.lines[j].t * 1000 <= ms) k = j; else break; }
+    if (k === LY.idx) return;
+    LY.idx = k; setLyric(k >= 0 ? c.lines[k].text : '');
+  }
+  setInterval(lyricTick, 250);
+
+  $('bPickLy').onclick = async () => {
+    if (native) {
+      try {
+        const r = await MF.pickLyricsFolder();
+        store.set('lyUri', r.uri); store.set('lyName', r.name || ''); store.set('lyWritable', !!r.writable);
+        await loadLyricsIndex();
+        if (cur >= 0) loadLyricsFor(cur);
+      } catch (e) { /* cancelado */ }
+    } else { $('lyIn').click(); }
+  };
+  $('lyIn').onchange = e => { LY.webFiles = []; store.set('lyName', 'Carpeta elegida en esta sesión'); lyAddWebFiles(e.target.files); setTimeout(() => cur >= 0 && loadLyricsFor(cur), 50); };
+  $('bLyClear').onclick = async () => {
+    store.set('lyUri', null); store.set('lyName', ''); LY.webFiles = [];
+    await loadLyricsIndex(); if (cur >= 0) loadLyricsFor(cur);
+  };
+  $('bLyOn').onclick = () => {
+    store.set('lyOn', !lyOn()); updateLyInfo(); showLyricBar();
+    if (!lyOn()) { LY.cur = null; setLyric(''); } else if (cur >= 0) loadLyricsFor(cur);
+  };
+
+  /* ---------- Editor ---------- */
+  const E = { lines: [], sel: 0, key: '', fname: '', warned: false, timer: null };
+  const eMsg = t => { $('eMsg').textContent = t || ''; };
+
+  function eRender(scroll) {
+    const box = $('eList'); box.innerHTML = '';
+    E.lines.forEach((l, i) => {
+      const r = document.createElement('div'); r.className = 'erow' + (i === E.sel ? ' sel' : '');
+      const t = document.createElement('button');
+      t.className = 'et' + (l.t == null ? ' none' : ''); t.textContent = l.t == null ? '--:--.--' : fmtT(l.t);
+      t.onclick = async e => { e.stopPropagation(); E.sel = i; l.t = (await getPos()) / 1000; eRender(); };
+      const x = document.createElement('input'); x.className = 'etx'; x.value = l.text;
+      x.oninput = () => { l.text = x.value; E.warned = false; };
+      x.onfocus = () => { if (E.sel !== i) { E.sel = i; box.querySelectorAll('.erow').forEach((el, j) => el.classList.toggle('sel', j === i)); } };
+      r.onclick = () => { E.sel = i; box.querySelectorAll('.erow').forEach((el, j) => el.classList.toggle('sel', j === i)); };
+      r.appendChild(t); r.appendChild(x); box.appendChild(r);
+    });
+    if (scroll) { const el = box.children[E.sel]; if (el && el.scrollIntoView) el.scrollIntoView({ block: 'center' }); }
+  }
+
+  function openEditor() {
+    if (cur < 0 || !tracks[cur]) { return; }
+    const tr = tracks[cur];
+    E.key = normKey(tr.name); E.fname = baseOf(tr.name) + '.lrc'; E.warned = false;
+    const c = LY.cur;
+    E.lines = c && c.lines.length ? c.lines.map(l => ({ t: l.t, text: l.text })) : [];
+    E.sel = 0; eMsg('');
+    $('eTitle').textContent = 'Letra: ' + cleanName(tr.name);
+    $('ePasteBox').hidden = true; $('eList').hidden = false;
+    $('eDown').style.display = native ? 'none' : '';
+    $('editor').hidden = false; eRender(true);
+    clearInterval(E.timer);
+    E.timer = setInterval(async () => { $('eClock').textContent = fmtT((await getPos()) / 1000); }, 200);
+    if (!E.lines.length) eMsg('No hay letra. Usa PEGAR TEXTO para pegarla o + LÍNEA para escribirla; luego toca MARCAR LÍNEA al empezar a cantarse cada una.');
+  }
+  function closeEditor() { clearInterval(E.timer); $('editor').hidden = true; LY.idx = -1; }
+
+  $('bLyEdit').onclick = openEditor;
+  $('eClose').onclick = closeEditor;
+  $('ePlay').onclick = () => togglePlay();
+  $('eBack5').onclick = async () => {
+    const ms = Math.max(0, (await getPos()) - 5000);
+    if (native) MF.seek({ ms }); else audio.currentTime = ms / 1000;
+  };
+  $('eMark').onclick = async () => {
+    if (!E.lines.length) return;
+    E.lines[E.sel].t = (await getPos()) / 1000;
+    if (E.sel < E.lines.length - 1) E.sel++;
+    eRender(true);
+  };
+  const nudge = d => { const l = E.lines[E.sel]; if (l && l.t != null) { l.t = Math.max(0, l.t + d); eRender(); } };
+  $('eMinus').onclick = () => nudge(-0.2);
+  $('ePlus').onclick = () => nudge(0.2);
+  $('eAdd').onclick = () => { E.lines.splice(E.sel + 1, 0, { t: null, text: '' }); E.sel = Math.min(E.sel + 1, E.lines.length - 1); eRender(true); };
+  $('eDel').onclick = () => { if (!E.lines.length) return; E.lines.splice(E.sel, 1); E.sel = Math.max(0, Math.min(E.sel, E.lines.length - 1)); eRender(true); };
+
+  let pasting = false;
+  $('ePaste').onclick = () => {
+    const box = $('ePasteBox');
+    if (!pasting) {                                       // abrir el cuadro de texto
+      pasting = true; box.value = E.lines.map(l => l.text).join('\n');
+      box.hidden = false; $('eList').hidden = true; $('ePaste').textContent = 'USAR ESTE TEXTO';
+      eMsg('Una línea de letra por renglón. Si el número de líneas no cambia, se conservan los tiempos.');
+    } else {                                              // aplicar
+      const nl = box.value.split(/\r?\n/).map(x => x.trim()).filter(Boolean);
+      const keep = nl.length === E.lines.length;
+      E.lines = nl.map((text, i) => ({ t: keep ? E.lines[i].t : null, text }));
+      E.sel = 0; pasting = false; box.hidden = true; $('eList').hidden = false; $('ePaste').textContent = 'PEGAR TEXTO';
+      eMsg(nl.length + ' líneas. Pon la música y toca MARCAR LÍNEA al empezar a cantarse cada una.'); eRender(true);
+    }
+  };
+
+  function buildLrc() {
+    const timed = E.lines.filter(l => l.t != null).sort((a, b) => a.t - b.t);
+    return { timed, untimed: E.lines.length - timed.length, text: timed.map(l => '[' + fmtT(l.t) + ']' + l.text).join('\n') + '\n' };
+  }
+
+  $('eSave').onclick = async () => {
+    const b = buildLrc();
+    if (!b.timed.length) { eMsg('Aún no hay líneas con tiempo. Toca MARCAR LÍNEA mientras suena la canción.'); return; }
+    if (b.untimed && !E.warned) { E.warned = true; eMsg(b.untimed + ' línea(s) sin tiempo no se guardarán. Toca GUARDAR otra vez para continuar.'); return; }
+    let where = '';
+    const ed = lyEdits();
+    if (native) {
+      const ref = LY.map.get(E.key), tree = store.get('lyUri', null);
+      try {
+        if (ref && ref.ext === 'lrc') await MF.writeText({ uri: ref.uri, text: b.text });
+        else if (tree) { const r = await MF.writeText({ tree, name: E.fname, text: b.text }); LY.map.set(E.key, { ext: 'lrc', name: E.fname, uri: r.uri }); }
+        else throw new Error('sin carpeta de letras');
+        delete ed[E.key]; store.set('lyEdits', ed);
+        where = 'en la carpeta de letras';
+      } catch (e) {
+        ed[E.key] = b.text; store.set('lyEdits', ed);
+        where = 'dentro de la app (no se pudo escribir en la carpeta: ' + (e && e.message ? e.message : e) + ')';
+      }
+    } else {
+      ed[E.key] = b.text; store.set('lyEdits', ed); where = 'en este navegador (usa DESCARGAR .LRC para tener el archivo)';
+    }
+    LY.cur = Object.assign({ key: E.key, has: true }, parseLyrics(b.text)); LY.idx = -1;
+    E.warned = false; showLyricBar(); updateLyInfo();
+    eMsg('Guardado ' + where + '.');
+  };
+  $('eDown').onclick = () => {
+    const b = buildLrc(); if (!b.timed.length) return;
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([b.text], { type: 'text/plain' })); a.download = E.fname;
+    document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 500);
+  };
+
+  /* =====================  AMBIENTE (Neón / Discoteca / Slime)  ===================== */
+  const FX_MODES = [['off', 'Apagado'], ['neon', 'Neón'], ['disco', 'Discoteca'], ['slime', 'Slime']];
+  const FX = { mode: 'off', beat: 0, last: 0, raf: 0, hueStep: -1, lastVar: 0, tap: [] };
+  const fxBack = $('fxBack'), fxFront = $('fxFront');
+  const bpmVal = () => Math.max(50, Math.min(200, +store.get('bpm', 120) || 120));
+  const frac = x => x - Math.floor(x);
+
+  function hsl2hex(h, sat, l) {
+    h = ((h % 360) + 360) % 360; sat /= 100; l /= 100;
+    const k = n => (n + h / 30) % 12, a = sat * Math.min(l, 1 - l);
+    const f = n => l - a * Math.max(-1, Math.min(k(n) - 3, Math.min(9 - k(n), 1)));
+    return toHex([f(0) * 255, f(8) * 255, f(4) * 255]);
+  }
+
+  function fxResize() {
+    const w = innerWidth, h = innerHeight, dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+    [[fxBack, 1], [fxFront, dpr]].forEach(([cv, d]) => {
+      const W = Math.round(w * d), H = Math.round(h * d);
+      if (cv.width !== W || cv.height !== H) { cv.width = W; cv.height = H; }
+    });
+  }
+  window.addEventListener('resize', fxResize);
+
+  function setFx(m) {
+    FX.mode = m; store.set('fx', m);
+    cancelAnimationFrame(FX.raf); FX.raf = 0;
+    fxBack.style.display = (m === 'neon' || m === 'disco') ? 'block' : 'none';
+    fxFront.style.display = m === 'slime' ? 'block' : 'none';
+    fxBack.getContext('2d').clearRect(0, 0, fxBack.width, fxBack.height);
+    fxFront.getContext('2d').clearRect(0, 0, fxFront.width, fxFront.height);
+    applyColors();                                         // restaura los colores elegidos
+    FX.hueStep = -1;
+    if (m !== 'off') { fxResize(); FX.last = performance.now(); FX.raf = requestAnimationFrame(fxLoop); }
+    buildFxUI();
+  }
+
+  function fxLoop(now) {
+    FX.raf = requestAnimationFrame(fxLoop);
+    const dt = (now - FX.last) / 1000;
+    if (dt < 0.033) return;                                // ~30 cuadros/s para ahorrar batería
+    FX.last = now;
+    if (playing) FX.beat += Math.min(dt, 0.2) * bpmVal() / 60;
+    if (FX.mode === 'neon') drawNeon(now); else if (FX.mode === 'disco') drawDisco(now); else if (FX.mode === 'slime') drawSlime(dt, now);
+  }
+
+  function drawNeon() {
+    const cv = fxBack, g = cv.getContext('2d'), W = cv.width, H = cv.height, b = FX.beat, f = frac(b);
+    const hue = (b * 22.5) % 360;
+    if (performance.now() - FX.lastVar > 120) {            // colores de la app (a ~8 por segundo)
+      FX.lastVar = performance.now();
+      applyColors({ accent: hsl2hex(hue, 100, 60), border: hsl2hex(hue + 20, 100, 88), ink: hsl2hex(hue + 20, 100, 94) });
+    }
+    const col = hsl2hex(hue, 100, 60);
+    g.clearRect(0, 0, W, H);
+    const pulse = (1 - f) * (1 - f);
+    const gr = g.createRadialGradient(W / 2, H / 2, 0, W / 2, H / 2, Math.max(W, H) * 0.7);
+    gr.addColorStop(0, rgba(col, 0.10 + 0.22 * pulse)); gr.addColorStop(1, rgba(col, 0));
+    g.fillStyle = gr; g.fillRect(0, 0, W, H);
+    const maxR = Math.hypot(W, H) / 2;                     // anillos que se expanden en cada pulso
+    for (let k = 0; k < 2; k++) {
+      const ff = frac(b / 2 + k / 2);
+      g.beginPath(); g.arc(W / 2, H / 2, ff * maxR, 0, 6.2832);
+      g.strokeStyle = rgba(hsl2hex(hue + k * 40, 100, 62), (1 - ff) * 0.45); g.lineWidth = Math.max(2, W * 0.004); g.stroke();
+    }
+    g.save(); g.shadowColor = col; g.shadowBlur = 18 + 24 * pulse;   // marco de neón
+    g.strokeStyle = rgba(col, 0.55 + 0.4 * pulse); g.lineWidth = Math.max(3, W * 0.005);
+    const m = g.lineWidth * 2; g.strokeRect(m, m, W - 2 * m, H - 2 * m); g.restore();
+  }
+
+  const SPARK = Array.from({ length: 28 }, (_, i) => ({ x: frac(Math.sin(i * 91.7) * 437.5), y: frac(Math.sin(i * 12.3 + 4) * 913.1) }));
+  function drawDisco() {
+    const cv = fxBack, g = cv.getContext('2d'), W = cv.width, H = cv.height, b = FX.beat, f = frac(b), bi = Math.floor(b);
+    const hue = (bi * 137.5) % 360;
+    if (bi !== FX.hueStep) {                               // un color nuevo en cada pulso
+      FX.hueStep = bi;
+      applyColors({ accent: hsl2hex(hue, 100, 58), border: hsl2hex(hue + 180, 100, 85), ink: hsl2hex(hue + 180, 90, 94) });
+    }
+    g.clearRect(0, 0, W, H);
+    g.globalCompositeOperation = 'lighter';
+    for (let i = 0; i < 4; i++) {                          // haces de luz que van de un lado al otro
+      const ang = Math.sin(b * Math.PI / 2 + i * 1.7) * 0.75;
+      const x0 = W * (0.12 + 0.253 * i), len = H * 1.5, spread = 0.11;
+      const hx = hsl2hex(hue + i * 70, 100, 60);
+      const gr = g.createLinearGradient(x0, 0, x0 + Math.sin(ang) * len, Math.cos(ang) * len);
+      gr.addColorStop(0, rgba(hx, 0.42)); gr.addColorStop(1, rgba(hx, 0));
+      g.fillStyle = gr; g.beginPath(); g.moveTo(x0 - 6, -4); g.lineTo(x0 + 6, -4);
+      g.lineTo(x0 + Math.sin(ang + spread) * len, Math.cos(ang + spread) * len);
+      g.lineTo(x0 + Math.sin(ang - spread) * len, Math.cos(ang - spread) * len); g.closePath(); g.fill();
+    }
+    const fl = (1 - f) * (1 - f);                          // destello de piso en cada pulso
+    const gr2 = g.createRadialGradient(W / 2, H, 0, W / 2, H, W * 0.6);
+    gr2.addColorStop(0, rgba(hsl2hex(hue + 180, 100, 60), 0.45 * fl)); gr2.addColorStop(1, rgba(hsl2hex(hue + 180, 100, 60), 0));
+    g.fillStyle = gr2; g.fillRect(0, 0, W, H);
+    SPARK.forEach((p, i) => {
+      const a = Math.pow(Math.abs(Math.sin(b * Math.PI * 0.5 + i * 1.3)), 6);
+      if (a < 0.05) return;
+      g.fillStyle = rgba(hsl2hex(hue + i * 25, 100, 80), a * 0.9);
+      g.beginPath(); g.arc(p.x * W, p.y * H, Math.max(1.5, W * 0.0035) * (1 + a), 0, 6.2832); g.fill();
+    });
+    g.globalCompositeOperation = 'source-over';
+  }
+
+  const SL = { x: 0.3, dir: 1 };
+  function drawSlime(dt, now) {
+    const cv = fxFront, g = cv.getContext('2d'), W = cv.width, H = cv.height, d = W / innerWidth;
+    const r = Math.max(26, Math.min(innerWidth, innerHeight) * 0.085) * d;
+    const t = playing ? frac(FX.beat) : 0;
+    if (playing) {                                         // avanza de lado a lado: cruza la pantalla en 8 pulsos
+      SL.x += SL.dir * (dt * bpmVal() / 60) / 8;
+      if (SL.x > 1) { SL.x = 1; SL.dir = -1; } else if (SL.x < 0) { SL.x = 0; SL.dir = 1; }
+    }
+    const floor = H - r * 1.15, top = H * 0.2;
+    const h = (floor - top) * 4 * t * (1 - t);             // parábola: un salto por pulso
+    const speed = Math.abs(1 - 2 * t), ground = 1 - Math.min(1, Math.min(t, 1 - t) / 0.12);
+    const sy = Math.max(0.55, (1 + 0.14 * speed) * (1 - 0.40 * ground)), sx = Math.min(1.55, 1 / Math.sqrt(sy));
+    const cx = r + SL.x * (W - 2 * r), cy = floor - h;
+    g.clearRect(0, 0, W, H);
+    g.fillStyle = 'rgba(0,0,0,' + (0.28 * (1 - h / (floor - top))) + ')';   // sombra en el piso
+    g.beginPath(); g.ellipse(cx, H - r * 0.25, r * (0.9 + 0.3 * ground) * (1 - 0.45 * h / (floor - top)), r * 0.16, 0, 0, 6.2832); g.fill();
+    g.save(); g.translate(cx, cy + r * (1 - sy) * 0.0); g.scale(sx, sy);
+    g.beginPath();
+    for (let a = 0; a <= 64; a++) {                        // contorno gelatinoso
+      const ang = a / 64 * 6.2832, wob = 1 + 0.035 * Math.sin(ang * 3 + now / 160) + 0.025 * Math.sin(ang * 5 - now / 230);
+      const px = Math.cos(ang) * r * wob, py = Math.sin(ang) * r * wob;
+      if (a) g.lineTo(px, py); else g.moveTo(px, py);
+    }
+    g.closePath();
+    const gr = g.createRadialGradient(-r * 0.3, -r * 0.35, r * 0.1, 0, 0, r * 1.05);
+    gr.addColorStop(0, '#c9ff7a'); gr.addColorStop(0.45, '#4fe04a'); gr.addColorStop(1, '#168a2a');
+    g.fillStyle = gr; g.globalAlpha = 0.93; g.fill(); g.globalAlpha = 1;
+    g.lineWidth = Math.max(2, r * 0.05); g.strokeStyle = 'rgba(210,255,190,.55)'; g.stroke();
+    g.fillStyle = 'rgba(255,255,255,.55)';                 // brillos
+    g.beginPath(); g.ellipse(-r * 0.32, -r * 0.45, r * 0.30, r * 0.16, -0.5, 0, 6.2832); g.fill();
+    g.beginPath(); g.arc(r * 0.38, r * 0.2, r * 0.07, 0, 6.2832); g.fill();
+    g.restore();
+  }
+
+  function buildFxUI() {
+    const box = $('fxModes'); box.innerHTML = '';
+    FX_MODES.forEach(([id, name]) => {
+      const b = document.createElement('button'); b.className = 'btn mini' + (FX.mode === id ? ' on' : ''); b.textContent = name;
+      b.onclick = () => setFx(id); box.appendChild(b);
+    });
+    $('bpm').value = bpmVal(); $('bpmv').textContent = bpmVal() + ' BPM';
+  }
+  $('bpm').oninput = e => { store.set('bpm', +e.target.value); $('bpmv').textContent = e.target.value + ' BPM'; };
+  $('bTap').onclick = () => {
+    const n = performance.now();
+    if (FX.tap.length && n - FX.tap[FX.tap.length - 1] > 2000) FX.tap = [];
+    FX.tap.push(n); if (FX.tap.length > 6) FX.tap.shift();
+    if (FX.tap.length >= 3) {
+      const iv = (FX.tap[FX.tap.length - 1] - FX.tap[0]) / (FX.tap.length - 1);
+      const v = Math.max(50, Math.min(200, Math.round(60000 / iv)));
+      store.set('bpm', v); $('bpm').value = v; $('bpmv').textContent = v + ' BPM';
+    }
   };
 
   /* ---------- Eventos de reproducción ---------- */
@@ -752,6 +1236,9 @@ html[data-style=contraste] .lbl{display:block;font-size:max(2.6vmin,11px);font-w
   renderMode();
   setPlaying(false);
   loadFaces();
+  updateLyInfo();
+  LY.ready = loadLyricsIndex();
+  setFx(store.get('fx', 'off'));
   (async () => {
     if (native) {
       const ok = await loadNativeFolder();
