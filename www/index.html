@@ -13,6 +13,7 @@
   --plomo:#808690; --plomo-osc:#1a1d22;
   --azul-a12:rgba(76,141,255,.12); --azul-a16:rgba(76,141,255,.16); --azul-a22:rgba(76,141,255,.22); --azul-a33:rgba(76,141,255,.33); --azul-a40:rgba(76,141,255,.4); --azul-a50:rgba(76,141,255,.5); --azul-a66:rgba(76,141,255,.66); --azul-a70:rgba(76,141,255,.7);
   --borde-a4:rgba(255,255,255,.04); --borde-a22:rgba(255,255,255,.22); --borde-a60:rgba(255,255,255,.6); --borde-a90:rgba(255,255,255,.9);
+  --D:56vmin; --Ds:44vmin; --pt:0px; --ps:0px; --pb:0px;
   --glass1:#101b30; --ink-a50:rgba(255,255,255,.5); --prog:0%;
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none}
@@ -22,9 +23,9 @@ html,body{margin:0;height:100%;color:var(--ink1);overflow:hidden;touch-action:ma
 
 /* Anillos tipo lente al fondo */
 #rings{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
-#app{position:relative;z-index:1;display:grid;grid-template-rows:auto 1fr;gap:12px;height:100%;
-  padding:max(12px,env(safe-area-inset-top)) max(14px,env(safe-area-inset-right))
-          max(12px,env(safe-area-inset-bottom)) max(14px,env(safe-area-inset-left))}
+#app{position:relative;z-index:1;display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(0,1fr);gap:12px;height:100%;width:100%;max-width:100vw;overflow:hidden;box-sizing:border-box;
+  padding:calc(max(12px,env(safe-area-inset-top)) + var(--pt)) calc(max(14px,env(safe-area-inset-right)) + var(--ps))
+          calc(max(12px,env(safe-area-inset-bottom)) + var(--pb)) calc(max(14px,env(safe-area-inset-left)) + var(--ps))}
 
 /* Botones: estructura común (el aspecto lo define el estilo elegido: html[data-style]) */
 .btn{position:relative;overflow:hidden;color:var(--ink1);font:inherit;cursor:pointer;display:flex;align-items:center;justify-content:center;
@@ -57,12 +58,11 @@ html,body{margin:0;height:100%;color:var(--ink1);overflow:hidden;touch-action:ma
   -webkit-text-fill-color:transparent;color:transparent}
 
 /* Controles grandes (círculos) */
-#big{display:flex;align-items:center;justify-content:space-evenly;gap:12px;min-height:0}
+#big{display:flex;align-items:center;justify-content:space-evenly;gap:12px;min-height:0;min-width:0}
 .col{display:contents}
 .lbl{display:none}
-#big .btn{aspect-ratio:1/1;flex:none;border-radius:50%;max-width:34%}
-#bPrev,#bNext{height:76%}
-#big #bPlay{height:100%;max-width:44%}
+#big .btn{flex:none;border-radius:50%;width:var(--Ds);height:var(--Ds)}
+#big #bPlay{width:var(--D);height:var(--D)}
 #big .btn svg{width:42%;height:42%}
 #bPlay svg{width:46%;height:46%}
 #big .face.cover{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
@@ -116,9 +116,7 @@ html[data-style=contraste] #big #bPlay{border-color:var(--azul)}
 html[data-style=contraste] #big .btn svg{fill:var(--ink1);stroke:var(--ink1);stroke-width:1.6}
 html[data-style=contraste] .small{border-width:3px;border-color:var(--borde);color:var(--ink1);box-shadow:none;font-weight:700}
 html[data-style=contraste] .small.active{border-color:var(--azul)}
-html[data-style=contraste] .col{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2vmin;height:100%;min-height:0}
-html[data-style=contraste] #bPrev,html[data-style=contraste] #bNext{height:calc(76% - 6vmin)}
-html[data-style=contraste] #big #bPlay{height:calc(100% - 9vmin);max-width:none}
+html[data-style=contraste] .col{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2vmin}
 html[data-style=contraste] .lbl{display:block;font-size:max(2.6vmin,11px);font-weight:700;letter-spacing:.28em;color:var(--ink1);opacity:.85;text-transform:uppercase}
 
 /* ---------- Configuración ---------- */
@@ -149,6 +147,12 @@ html[data-style=contraste] .lbl{display:block;font-size:max(2.6vmin,11px);font-w
 .dot.d-acero{background:conic-gradient(from 210deg,#5b626d,#eef1f6,#6a717c,#c9cfd8,#4a505a,#e8ecf2,#5b626d);border:0!important;box-shadow:inset 0 0 0 7px #000}
 .dot.d-neon{background:conic-gradient(var(--azul) 0 66%,rgba(255,255,255,.14) 66%);border:0!important;box-shadow:inset 0 0 0 6px #000}
 .dot.d-contraste{background:#000;border-width:5px!important}
+#settings.peek{background:transparent!important}
+#settings.peek #sHead,#settings.peek #sBody>section:not(#padSec),#settings.peek #nota{visibility:hidden}
+#settings.peek #padSec{background:rgba(0,0,0,.82);padding:12px 16px;border-radius:20px;position:sticky;top:0;z-index:2}
+.prow input[type=range]{flex:1;max-width:58%;accent-color:var(--azul)}
+.pv{min-width:52px;text-align:right;color:var(--plomo);font-size:13px}
+.hint{color:var(--plomo);font-size:13px;line-height:1.4}
 #presets{display:flex;flex-wrap:wrap;gap:10px 14px}
 .sw{background:none;border:0;color:var(--plomo);font:inherit;font-size:12px;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;padding:4px;min-width:62px}
 .sw .dot{width:48px;height:48px;border-radius:50%;border:3px solid #fff}
@@ -249,6 +253,13 @@ html[data-style=contraste] .lbl{display:block;font-size:max(2.6vmin,11px);font-w
     <section>
       <div class="kicker">Estilo de los botones</div>
       <div id="styles" class="row" style="gap:10px 14px"></div>
+    </section>
+
+    <section id="padSec">
+      <div class="kicker">Márgenes de pantalla</div>
+      <div class="hint">Si la pantalla del auto recorta los bordes o una barra tapa los botones, aumenta el margen. Mientras mueves el control verás la pantalla detrás.</div>
+      <div id="pads"></div>
+      <div class="row"><button class="btn mini" id="bResetPads">Restablecer márgenes</button></div>
     </section>
 
     <section>
@@ -371,6 +382,7 @@ html[data-style=contraste] .lbl{display:block;font-size:max(2.6vmin,11px);font-w
   function applyStyle() {
     document.documentElement.dataset.style = curStyle();
     buildStyleUI();
+    lastD = 0; schedFit();
   }
   function startProgress() {                 // anillo de progreso del estilo Neón
     setInterval(async () => {
@@ -384,6 +396,52 @@ html[data-style=contraste] .lbl{display:block;font-size:max(2.6vmin,11px);font-w
       document.documentElement.style.setProperty('--prog', pct.toFixed(1) + '%');
     }, 500);
   }
+
+  /* =====================  AJUSTE A LA PANTALLA  ===================== */
+  let lastD = 0;
+  function fitBig() {                       // los círculos se calculan para que siempre quepan en alto y ancho
+    const big = $('big'); if (!big) return;
+    const W = big.clientWidth, H = big.clientHeight; if (!W || !H) return;
+    const lbl = curStyle() === 'contraste' ? Math.max(34, Math.min(innerWidth, innerHeight) * 0.09) : 0;
+    const W2 = Math.min(W, innerWidth);
+    const D = Math.max(60, Math.floor(Math.min(H - lbl, (W2 - 40) / 2.7)));
+    if (D === lastD) return; lastD = D;
+    const st = document.documentElement.style;
+    st.setProperty('--D', D + 'px'); st.setProperty('--Ds', Math.round(D * 0.78) + 'px');
+  }
+  const schedFit = () => requestAnimationFrame(fitBig);
+  window.addEventListener('resize', schedFit);
+  window.addEventListener('orientationchange', schedFit);
+
+  const PADS = [['t', 'Margen superior', '--pt'], ['s', 'Margen lateral', '--ps'], ['b', 'Margen inferior', '--pb']];
+  const getPads = () => Object.assign({ t: 0, s: 0, b: 0 }, store.get('pads', {}));
+  function applyPads() {
+    const p = getPads(), st = document.documentElement.style;
+    PADS.forEach(([k, , v]) => st.setProperty(v, (+p[k] || 0) + 'px'));
+    lastD = 0; schedFit();
+  }
+  let peekTimer = null;
+  const peek = on => {
+    clearTimeout(peekTimer);
+    if (on) $('settings').classList.add('peek');
+    else peekTimer = setTimeout(() => $('settings').classList.remove('peek'), 700);
+  };
+  function buildPadUI() {
+    const box = $('pads'); box.innerHTML = '';
+    PADS.forEach(([k, label]) => {
+      const l = document.createElement('label'); l.className = 'prow';
+      l.innerHTML = '<span>' + label + '</span><input type="range" min="0" max="140" step="2"><span class="pv"></span>';
+      const r = l.querySelector('input'), v = l.querySelector('.pv');
+      r.value = getPads()[k]; v.textContent = r.value + ' px';
+      r.addEventListener('input', () => {
+        const cur = getPads(); cur[k] = +r.value; store.set('pads', cur); v.textContent = r.value + ' px';
+        peek(true); applyPads();
+      });
+      ['change', 'pointerup', 'touchend', 'mouseup'].forEach(ev => r.addEventListener(ev, () => peek(false)));
+      box.appendChild(l);
+    });
+  }
+  $('bResetPads').onclick = () => { store.set('pads', {}); applyPads(); buildPadUI(); };
 
   /* =====================  IMÁGENES DE BOTONES (IndexedDB)  ===================== */
   const FACES = [
@@ -683,9 +741,13 @@ html[data-style=contraste] .lbl{display:block;font-size:max(2.6vmin,11px);font-w
 
   /* ---------- Inicio: reproduce solo ---------- */
   applyColors();
+  applyPads();
   applyStyle();
   buildColorUI();
+  buildPadUI();
   startProgress();
+  if (window.ResizeObserver) new ResizeObserver(schedFit).observe($('big'));
+  schedFit(); setTimeout(schedFit, 300);
   buildImgRows();
   renderMode();
   setPlaying(false);
