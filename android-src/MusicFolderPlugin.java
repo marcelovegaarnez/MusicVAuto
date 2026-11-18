@@ -53,10 +53,9 @@ public class MusicFolderPlugin extends Plugin {
             a.getWindow().getDecorView().setSystemUiVisibility(
                     View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
                             | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                            | View.SYSTEM_UI_FLAG_FULLSCREEN
-                            | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+                            | View.SYSTEM_UI_FLAG_FULLSCREEN);
+            // Sin las banderas LAYOUT_*: si la pantalla (p. ej. la de un auto) no puede ocultar sus barras,
+            // la app se dibuja debajo de ellas en vez de quedar tapada.
         });
     }
 
