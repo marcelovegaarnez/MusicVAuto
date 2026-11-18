@@ -6,12 +6,17 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.media.AudioAttributes;
 import android.media.AudioManager;
+import android.media.MediaMetadata;
 import android.media.MediaPlayer;
+import android.media.session.MediaSession;
+import android.media.session.PlaybackState;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.PowerManager;
 import android.provider.DocumentsContract;
+import android.provider.Settings;
 import android.view.View;
 import android.view.WindowManager;
 
@@ -46,6 +51,7 @@ public class MusicFolderPlugin extends Plugin {
     private MediaPlayer mp;
     private AudioManager am;
     private boolean pausedByFocus = false;
+    private MediaSession session;
 
     @Override
     public void load() {
@@ -60,6 +66,63 @@ public class MusicFolderPlugin extends Plugin {
                             | View.SYSTEM_UI_FLAG_FULLSCREEN);
             // Sin las banderas LAYOUT_*: si la pantalla (p. ej. la de un auto) no puede ocultar sus barras,
             // la app se dibuja debajo de ellas en vez de quedar tapada.
+            initSession();
+        });
+    }
+
+    /* ---------------- Botones multimedia (volante del auto, auriculares) ---------------- */
+
+    private void initSession() {
+        try {
+            session = new MediaSession(getContext(), "AutoMusica");
+            session.setFlags(MediaSession.FLAG_HANDLES_MEDIA_BUTTONS | MediaSession.FLAG_HANDLES_TRANSPORT_CONTROLS);
+            session.setCallback(new MediaSession.Callback() {
+                @Override public void onSkipToNext() { emitKey("next"); }
+                @Override public void onSkipToPrevious() { emitKey("prev"); }
+                @Override public void onPlay() { emitKey("play"); }
+                @Override public void onPause() { emitKey("pause"); }
+                @Override public void onStop() { emitKey("pause"); }
+            });
+            session.setActive(true);
+            updateSession(false);
+        } catch (Exception e) {
+            session = null;
+        }
+    }
+
+    private void emitKey(String action) {
+        JSObject o = new JSObject();
+        o.put("action", action);
+        notifyListeners("mediaKey", o);
+    }
+
+    private void updateSession(boolean playing) {
+        if (session == null) return;
+        try {
+            long actions = PlaybackState.ACTION_PLAY | PlaybackState.ACTION_PAUSE | PlaybackState.ACTION_PLAY_PAUSE
+                    | PlaybackState.ACTION_SKIP_TO_NEXT | PlaybackState.ACTION_SKIP_TO_PREVIOUS | PlaybackState.ACTION_STOP;
+            session.setPlaybackState(new PlaybackState.Builder()
+                    .setActions(actions)
+                    .setState(playing ? PlaybackState.STATE_PLAYING : PlaybackState.STATE_PAUSED,
+                            PlaybackState.PLAYBACK_POSITION_UNKNOWN, 1f)
+                    .build());
+            session.setActive(true);
+        } catch (Exception ignored) { }
+    }
+
+    @PluginMethod
+    public void setMeta(final PluginCall call) {
+        final String t = call.getString("title", "");
+        main.post(() -> {
+            try {
+                if (session != null) {
+                    session.setMetadata(new MediaMetadata.Builder()
+                            .putString(MediaMetadata.METADATA_KEY_TITLE, t)
+                            .putString(MediaMetadata.METADATA_KEY_ARTIST, "Auto Música")
+                            .build());
+                }
+            } catch (Exception ignored) { }
+            call.resolve();
         });
     }
 
@@ -200,6 +263,7 @@ public class MusicFolderPlugin extends Plugin {
     }
 
     private void emitState(boolean playing) {
+        updateSession(playing);
         JSObject s = new JSObject();
         s.put("playing", playing);
         notifyListeners("state", s);
@@ -391,6 +455,41 @@ public class MusicFolderPlugin extends Plugin {
         });
     }
 
+
+    /* ---------------- Inicio automático al encender la radio ---------------- */
+
+    @PluginMethod
+    public void setAutostart(PluginCall call) {
+        boolean on = call.getBoolean("on", true);
+        getContext().getSharedPreferences("automusica", Context.MODE_PRIVATE).edit().putBoolean("autostart", on).apply();
+        call.resolve();
+    }
+
+    @PluginMethod
+    public void overlayStatus(PluginCall call) {
+        boolean ok = Build.VERSION.SDK_INT < 23 || Settings.canDrawOverlays(getContext());
+        JSObject r = new JSObject();
+        r.put("granted", ok);
+        call.resolve(r);
+    }
+
+    @PluginMethod
+    public void openOverlaySettings(PluginCall call) {
+        String pkg = "package:" + getContext().getPackageName();
+        try {
+            Intent i = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse(pkg));
+            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            getContext().startActivity(i);
+        } catch (Exception e) {
+            try {
+                Intent i = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse(pkg));
+                i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                getContext().startActivity(i);
+            } catch (Exception ignored) { }
+        }
+        call.resolve();
+    }
+
     @PluginMethod
     public void stop(PluginCall call) {
         main.post(() -> { releasePlayer(); call.resolve(); });
@@ -412,6 +511,7 @@ public class MusicFolderPlugin extends Plugin {
     @Override
     protected void handleOnDestroy() {
         releasePlayer();
+        if (session != null) { try { session.setActive(false); session.release(); } catch (Exception ignored) { } session = null; }
         super.handleOnDestroy();
     }
 }
