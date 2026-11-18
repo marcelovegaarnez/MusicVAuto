@@ -13,7 +13,7 @@
   --plomo:#808690; --plomo-osc:#1a1d22;
   --azul-a12:rgba(76,141,255,.12); --azul-a16:rgba(76,141,255,.16); --azul-a22:rgba(76,141,255,.22); --azul-a33:rgba(76,141,255,.33); --azul-a40:rgba(76,141,255,.4); --azul-a50:rgba(76,141,255,.5); --azul-a66:rgba(76,141,255,.66); --azul-a70:rgba(76,141,255,.7);
   --borde-a4:rgba(255,255,255,.04); --borde-a22:rgba(255,255,255,.22); --borde-a60:rgba(255,255,255,.6); --borde-a90:rgba(255,255,255,.9);
-  --D:56vmin; --Ds:44vmin; --pt:0px; --ps:0px; --pb:0px;
+  --ts:1; --D:56vmin; --Ds:44vmin; --pt:0px; --ps:0px; --pb:0px;
   --glass1:#101b30; --ink-a50:rgba(255,255,255,.5); --prog:0%;
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none}
@@ -53,7 +53,7 @@ html,body{margin:0;height:100%;color:var(--ink1);overflow:hidden;touch-action:ma
 /* Nombre de la canción: solo texto, junto a SECUENCIAL */
 #titleBox{flex:1;min-width:0;padding:0 8px;display:flex;flex-direction:column;justify-content:center;gap:3px}
 #cap{font-size:max(2.1vmin,9px);letter-spacing:.34em;color:var(--plomo);text-transform:uppercase;font-weight:600}
-#title{font-size:max(4.8vmin,18px);font-weight:500;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+#title{font-size:calc(max(4.8vmin,18px) * var(--ts));font-weight:500;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
   background:linear-gradient(90deg,var(--ink1),var(--ink2));-webkit-background-clip:text;background-clip:text;
   -webkit-text-fill-color:transparent;color:transparent}
 
@@ -156,13 +156,50 @@ html[data-style=contraste] .lbl{display:block;font-size:max(2.6vmin,11px);font-w
 .pv{min-width:52px;text-align:right;color:var(--plomo);font-size:13px}
 .hint{color:var(--plomo);font-size:13px;line-height:1.4}
 
+
+/* ---------- Reloj ---------- */
+#clock{flex:none;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 8px;line-height:1}
+#clock[hidden]{display:none}
+#ckT{font-size:calc(max(6.4vmin,26px) * var(--ts));font-weight:300;letter-spacing:.05em;font-variant-numeric:tabular-nums;white-space:nowrap;
+  background:linear-gradient(180deg,var(--ink1),var(--ink2));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;
+  filter:drop-shadow(0 0 10px var(--azul-a33))}
+.ckc{padding:0 .04em;animation:ckb 2s steps(1) infinite}
+@keyframes ckb{0%,60%{opacity:1}61%,100%{opacity:.25}}
+#ckAp{font-size:.38em;letter-spacing:.1em}
+#ckD{margin-top:5px;font-size:calc(max(1.9vmin,9px) * var(--ts));letter-spacing:.3em;color:var(--plomo);text-transform:uppercase;font-weight:600;white-space:nowrap}
+@media (max-width:900px){#ckD{display:none!important}}
+
+/* ---------- Barra de progreso ---------- */
+#prog{display:flex;align-items:center;gap:12px;padding:0 6px}
+#prog[hidden]{display:none}
+#tCur,#tDur{flex:none;min-width:50px;font-size:calc(max(2.8vmin,12px) * var(--ts));color:var(--plomo);font-variant-numeric:tabular-nums;letter-spacing:.06em}
+#tDur{text-align:right}
+#bar{position:relative;flex:1;height:30px;cursor:pointer;touch-action:none}
+#bar::before{content:"";position:absolute;left:0;right:0;top:50%;height:6px;margin-top:-3px;border-radius:3px;background:var(--borde-a22)}
+#barFill{position:absolute;left:0;top:50%;height:6px;margin-top:-3px;border-radius:3px;width:0;background:linear-gradient(90deg,var(--azul-a66),var(--azul));
+  box-shadow:0 0 12px var(--azul-a50);transition:width .5s linear}
+#barKnob{position:absolute;top:50%;left:0;width:18px;height:18px;margin:-9px 0 0 -9px;border-radius:50%;background:var(--ink1);box-shadow:0 0 10px var(--azul-a66);transition:left .5s linear}
+#bar.drag #barFill,#bar.drag #barKnob{transition:none}
+
+/* ---------- Decoración opcional ---------- */
+#fxEq{position:fixed;left:0;bottom:0;width:100%;height:20%;z-index:0;pointer-events:none;display:none}
+#dim{position:fixed;inset:0;z-index:6;background:#000;opacity:0;pointer-events:none;transition:opacity 1.5s}
+#rings{transform-origin:50% 60%}
+#app.chg #title{animation:tslide .5s ease-out}
+#app.chg #big .btn{animation:bflash .6s ease-out}
+@keyframes tslide{from{opacity:0;transform:translateX(36px)}to{opacity:1;transform:none}}
+@keyframes bflash{0%{filter:brightness(1.9)}100%{filter:brightness(1)}}
+#themes{display:flex;flex-direction:column;gap:10px}
+#nightBox{display:flex;flex-direction:column;gap:10px}
+
 /* ---------- Letra inferior ---------- */
-#app.hasLy{grid-template-rows:auto minmax(0,1fr) auto}
+#app.hasBottom{grid-template-rows:auto minmax(0,1fr) auto}
+#bottom{display:flex;flex-direction:column;gap:6px;min-width:0}
 #lyric{display:flex;align-items:center;justify-content:center;gap:12px;min-height:max(8.5vmin,40px)}
 #lyric[hidden]{display:none}
-#lyricLine{flex:1;min-width:0;text-align:center;font-size:max(4.6vmin,18px);font-weight:500;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+#lyricLine{flex:1;min-width:0;text-align:center;font-size:calc(max(4.6vmin,18px) * var(--ts));font-weight:500;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
   background:linear-gradient(90deg,var(--ink1),var(--ink2));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent}
-#lyricLine.dim{opacity:.6;font-size:max(3.2vmin,13px)}
+#lyricLine.dim{opacity:.6;font-size:calc(max(3.2vmin,13px) * var(--ts))}
 #lyricLine.pop{animation:lypop .35s ease-out}
 @keyframes lypop{from{opacity:.2;transform:translateY(5px)}to{opacity:1;transform:none}}
 #bLyEdit{flex:none;height:max(7vmin,38px);padding:0 16px;font-size:max(2.6vmin,11px);font-weight:600;letter-spacing:.14em;border-width:1.5px;border-color:var(--plomo);color:var(--plomo)}
@@ -229,6 +266,7 @@ html[data-style=contraste] .lbl{display:block;font-size:max(2.6vmin,11px);font-w
 </svg>
 
 <canvas id="fxBack" aria-hidden="true"></canvas>
+<canvas id="fxEq" aria-hidden="true"></canvas>
 
 <div id="app">
   <div id="top">
@@ -246,6 +284,7 @@ html[data-style=contraste] .lbl{display:block;font-size:max(2.6vmin,11px);font-w
       <div id="cap">Ahora suena</div>
       <div id="title">Cargando…</div>
     </div>
+    <div id="clock" hidden><div id="ckT"><span id="ckH">00</span><span class="ckc">:</span><span id="ckM">00</span><span id="ckAp"></span></div><div id="ckD"></div></div>
     <button class="btn small" id="gear" aria-label="Configuración">
       <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
       <img class="face" alt="">
@@ -279,13 +318,21 @@ html[data-style=contraste] .lbl{display:block;font-size:max(2.6vmin,11px);font-w
       <span class="lbl">Siguiente</span>
     </div>
   </div>
-  <div id="lyric" hidden>
-    <div id="lyricLine"></div>
-    <button class="btn" id="bLyEdit" aria-label="Editar letra">EDITAR</button>
+  <div id="bottom">
+    <div id="prog" hidden>
+      <span id="tCur">0:00</span>
+      <div id="bar" role="slider" aria-label="Progreso de la canción"><div id="barFill"></div><div id="barKnob"></div></div>
+      <span id="tDur">--:--</span>
+    </div>
+    <div id="lyric" hidden>
+      <div id="lyricLine"></div>
+      <button class="btn" id="bLyEdit" aria-label="Editar letra">EDITAR</button>
+    </div>
   </div>
 </div>
 
 <canvas id="fxFront" aria-hidden="true"></canvas>
+<div id="dim"></div>
 
 <div id="settings" hidden>
   <div id="sHead">
@@ -310,6 +357,30 @@ html[data-style=contraste] .lbl{display:block;font-size:max(2.6vmin,11px);font-w
         <button class="btn mini" id="bLyClear">Usar la carpeta de música</button>
       </div>
       <div class="hint">Archivos .lrc (o .txt) con el mismo nombre que la canción. Con el botón EDITAR de la pantalla principal puedes crear o corregir una letra y sincronizarla.</div>
+    </section>
+
+    <section>
+      <div class="kicker">Pantalla</div>
+      <div id="uiToggles" class="row"></div>
+      <label class="prow"><span>Tamaño de texto</span><input type="range" id="uiTs" min="80" max="140" step="5"><span class="pv" id="uiTsV"></span></label>
+    </section>
+
+    <section>
+      <div class="kicker">Decoración (opcional)</div>
+      <div class="hint">Todo viene apagado. Si la radio va lenta con alguna, déjala apagada.</div>
+      <div id="decoToggles" class="row"></div>
+      <div id="nightBox">
+        <label class="prow"><span>Noche desde</span><input type="range" id="nFrom" min="0" max="23" step="1"><span class="pv" id="nFromV"></span></label>
+        <label class="prow"><span>Hasta</span><input type="range" id="nTo" min="0" max="23" step="1"><span class="pv" id="nToV"></span></label>
+        <label class="prow"><span>Oscurecer</span><input type="range" id="nAmt" min="10" max="70" step="5"><span class="pv" id="nAmtV"></span></label>
+        <div class="row"><button class="btn mini" id="nPrev">Ver ahora (3 s)</button></div>
+      </div>
+    </section>
+
+    <section>
+      <div class="kicker">Temas guardados</div>
+      <div class="hint">Guarda la combinación actual (colores, estilo de botones, ambiente y pantalla) y vuelve a ella con un toque. Las imágenes de los botones no se incluyen.</div>
+      <div id="themes"></div>
     </section>
 
     <section id="autoSec">
@@ -500,18 +571,7 @@ html[data-style=contraste] .lbl{display:block;font-size:max(2.6vmin,11px);font-w
     buildStyleUI();
     lastD = 0; schedFit();
   }
-  function startProgress() {                 // anillo de progreso del estilo Neón
-    setInterval(async () => {
-      if (curStyle() !== 'neon' || !playing) return;
-      let pos = 0, dur = 0;
-      try {
-        if (native) { const r = await MF.position(); pos = r.pos; dur = r.dur; }
-        else { pos = audio.currentTime * 1000; dur = (audio.duration || 0) * 1000; }
-      } catch (e) {}
-      const pct = dur > 0 ? Math.max(0, Math.min(100, pos / dur * 100)) : 0;
-      document.documentElement.style.setProperty('--prog', pct.toFixed(1) + '%');
-    }, 500);
-  }
+  function startProgress() { /* ahora lo hace el temporizador de la barra de progreso */ }
 
   /* =====================  AJUSTE A LA PANTALLA  ===================== */
   let lastD = 0;
@@ -723,6 +783,7 @@ html[data-style=contraste] .lbl{display:block;font-size:max(2.6vmin,11px);font-w
     setTitle(cleanName(tracks[i].name));
     if (native) MF.setMeta({ title: cleanName(tracks[i].name) }).catch(() => {});
     loadLyricsFor(i);
+    onTrackChange();
     try {
       if (native) {
         await MF.play({ uri: tracks[i].uri });
@@ -894,8 +955,7 @@ html[data-style=contraste] .lbl{display:block;font-size:max(2.6vmin,11px);font-w
   function showLyricBar() {
     const want = lyOn() && (LY.map.size > 0 || !!store.get('lyUri', null) || Object.keys(lyEdits()).length > 0);
     $('lyric').hidden = !want;
-    $('app').classList.toggle('hasLy', want);
-    lastD = 0; schedFit();
+    updateBottom();
   }
 
   function updateLyInfo() {
@@ -1073,6 +1133,180 @@ html[data-style=contraste] .lbl{display:block;font-size:max(2.6vmin,11px);font-w
 
 
 
+
+  /* =====================  PANTALLA: reloj, progreso, decoración, temas  ===================== */
+  const UI_DEF = { clock: true, h24: true, date: true, prog: true, eq: false, waves: false, trans: false, night: false, nFrom: 19, nTo: 6, nAmt: 30, ts: 100 };
+  const ui = () => Object.assign({}, UI_DEF, store.get('ui', {}));
+  let UIc = ui();
+  function setUi(patch) { store.set('ui', Object.assign(ui(), patch)); applyUi(); }
+
+  function applyUi() {
+    UIc = ui();
+    document.documentElement.style.setProperty('--ts', UIc.ts / 100);
+    $('clock').hidden = !UIc.clock;
+    $('ckD').style.display = UIc.date ? '' : 'none';
+    $('fxEq').style.display = UIc.eq ? 'block' : 'none';
+    updateBottom(); tickClock(true); fxKick(); tickProg(true);
+  }
+  function updateBottom() {
+    $('prog').hidden = !ui().prog;
+    $('app').classList.toggle('hasBottom', ui().prog || !$('lyric').hidden);
+    lastD = 0; schedFit();
+  }
+
+  /* ---------- Reloj ---------- */
+  let ckLast = '', previewing = false;
+  function tickClock(force) {
+    const d = new Date(); let h = d.getHours(); const m = d.getMinutes(); let ap = '';
+    if (!UIc.h24) { ap = h >= 12 ? ' PM' : ' AM'; h = h % 12 || 12; }
+    const hs = UIc.h24 ? String(h).padStart(2, '0') : String(h), ms = String(m).padStart(2, '0');
+    const key = hs + ms + ap + d.getDate();
+    if (key !== ckLast || force === true) {
+      ckLast = key; $('ckH').textContent = hs; $('ckM').textContent = ms; $('ckAp').textContent = ap;
+      $('ckD').textContent = d.toLocaleDateString('es', { weekday: 'short', day: 'numeric', month: 'short' }).replace(/[.,]/g, '');
+    }
+    applyNight();
+  }
+  setInterval(tickClock, 1000);
+
+  /* ---------- Modo noche ---------- */
+  function nightNow() {
+    if (!UIc.night) return false;
+    const h = new Date().getHours();
+    return UIc.nFrom <= UIc.nTo ? (h >= UIc.nFrom && h < UIc.nTo) : (h >= UIc.nFrom || h < UIc.nTo);
+  }
+  function applyNight() { $('dim').style.opacity = (previewing || nightNow()) ? UIc.nAmt / 100 : 0; }
+  $('nPrev').onclick = () => { previewing = true; applyNight(); setTimeout(() => { previewing = false; applyNight(); }, 3000); };
+
+  /* ---------- Barra de progreso ---------- */
+  const PD = { pos: 0, dur: 0, f: 0 };
+  let dragging = false, pdCur = -2;
+  const fmtM = ms => { const t = Math.max(0, Math.floor(ms / 1000)), h = Math.floor(t / 3600), m = Math.floor(t % 3600 / 60), sc = t % 60;
+    return h ? h + ':' + String(m).padStart(2, '0') + ':' + String(sc).padStart(2, '0') : m + ':' + String(sc).padStart(2, '0'); };
+  async function getPD() {
+    try {
+      if (native) { const r = await MF.position(); return { pos: r.pos || 0, dur: r.dur || 0 }; }
+      return { pos: audio.currentTime * 1000, dur: isFinite(audio.duration) ? audio.duration * 1000 : 0 };
+    } catch (e) { return { pos: 0, dur: 0 }; }
+  }
+  function setBar(f) {
+    f = Math.max(0, Math.min(1, f || 0));
+    $('barFill').style.width = (f * 100) + '%'; $('barKnob').style.left = (f * 100) + '%';
+    document.documentElement.style.setProperty('--prog', (f * 100).toFixed(1) + '%');
+  }
+  function resetProg() { pdCur = -2; PD.pos = 0; PD.dur = 0; setBar(0); $('tCur').textContent = '0:00'; $('tDur').textContent = '--:--'; }
+  async function tickProg(force) {
+    if (dragging) return;
+    if (!force && !playing && pdCur === cur) return;       // en pausa no se consulta de nuevo
+    const need = UIc.prog || curStyle() === 'neon'; if (!need) return;
+    pdCur = cur;
+    const r = await getPD(); PD.pos = r.pos; PD.dur = r.dur; PD.f = r.dur > 0 ? r.pos / r.dur : 0;
+    setBar(PD.f); $('tCur').textContent = fmtM(r.pos); $('tDur').textContent = r.dur > 0 ? fmtM(r.dur) : '--:--';
+  }
+  setInterval(tickProg, 500);
+  function onTrackChange() { resetProg(); if (UIc.trans) animateChange(); }
+
+  const bar = $('bar');
+  function barFrac(e) { const r = bar.getBoundingClientRect(); return Math.max(0, Math.min(1, (e.clientX - r.left) / r.width)); }
+  bar.addEventListener('pointerdown', e => {
+    dragging = true; bar.classList.add('drag'); try { bar.setPointerCapture(e.pointerId); } catch (x) {}
+    PD.f = barFrac(e); setBar(PD.f); $('tCur').textContent = fmtM(PD.f * PD.dur);
+  });
+  bar.addEventListener('pointermove', e => { if (dragging) { PD.f = barFrac(e); setBar(PD.f); $('tCur').textContent = fmtM(PD.f * PD.dur); } });
+  ['pointerup', 'pointercancel'].forEach(ev => bar.addEventListener(ev, async () => {
+    if (!dragging) return; dragging = false; bar.classList.remove('drag');
+    if (PD.dur > 0) {
+      const ms = PD.f * PD.dur;
+      if (native) { try { await MF.seek({ ms }); } catch (x) {} } else audio.currentTime = ms / 1000;
+      LY.idx = -1;
+    }
+    tickProg(true);
+  }));
+
+  /* ---------- Decoración ---------- */
+  function animateChange() { const a = $('app'); a.classList.remove('chg'); void a.offsetWidth; a.classList.add('chg'); }
+
+  const eqc = $('fxEq'); let eqLvl = 0.1, eqCol = '#4c8dff', eqColT = 0;
+  function drawEq(now) {
+    const g = eqc.getContext('2d'), W = eqc.width, H = eqc.height; g.clearRect(0, 0, W, H);
+    eqLvl += ((playing ? 1 : 0.08) - eqLvl) * 0.12;
+    if (now - eqColT > 300) { eqColT = now; eqCol = getComputedStyle(document.documentElement).getPropertyValue('--azul').trim() || '#4c8dff'; }
+    const n = Math.max(24, Math.round(W / 22)), bw = W / n, b = FX.beat, pulse = Math.pow(1 - frac(b), 2);
+    const gr = g.createLinearGradient(0, H, 0, 0); gr.addColorStop(0, rgba(eqCol, 0.5)); gr.addColorStop(1, rgba(eqCol, 0));
+    g.fillStyle = gr;
+    for (let i = 0; i < n; i++) {
+      const sn = Math.abs(Math.sin(b * Math.PI * (0.5 + (i % 7) * 0.29) + i * 1.7));
+      const h = H * eqLvl * (0.12 + 0.88 * sn * (0.55 + 0.45 * pulse));
+      g.fillRect(i * bw + bw * 0.18, H - h, bw * 0.64, h);
+    }
+  }
+  function pulseRings() {
+    const r = $('rings'), k = playing ? Math.pow(1 - frac(FX.beat), 2) : 0;
+    r.style.transform = 'scale(' + (1 + 0.035 * k).toFixed(4) + ')'; r.style.opacity = (0.8 + 0.2 * k).toFixed(3);
+  }
+  const fxNeeded = () => FX.mode !== 'off' || UIc.eq || UIc.waves;
+  function fxKick() {
+    if (fxNeeded()) {
+      if (!FX.raf) { fxResize(); FX.last = performance.now(); FX.raf = requestAnimationFrame(fxLoop); }
+    } else {
+      cancelAnimationFrame(FX.raf); FX.raf = 0;
+    }
+    if (!UIc.eq) eqc.getContext('2d').clearRect(0, 0, eqc.width, eqc.height);
+    if (!UIc.waves) { const r = $('rings'); r.style.transform = ''; r.style.opacity = ''; }
+  }
+
+  /* ---------- Ajustes de pantalla / decoración ---------- */
+  const TOG_SCREEN = [['clock', u => 'Reloj: ' + (u.clock ? 'sí' : 'no')], ['h24', u => 'Formato: ' + (u.h24 ? '24 h' : '12 h')],
+    ['date', u => 'Fecha: ' + (u.date ? 'sí' : 'no')], ['prog', u => 'Barra de progreso: ' + (u.prog ? 'sí' : 'no')]];
+  const TOG_DECO = [['eq', u => 'Ecualizador: ' + (u.eq ? 'sí' : 'no')], ['waves', u => 'Ondas en el fondo: ' + (u.waves ? 'sí' : 'no')],
+    ['trans', u => 'Transición al cambiar: ' + (u.trans ? 'sí' : 'no')], ['night', u => 'Modo noche: ' + (u.night ? 'sí' : 'no')]];
+  const hh = v => String(v).padStart(2, '0') + ':00';
+  function buildUiUI() {
+    const u = ui();
+    [['uiToggles', TOG_SCREEN], ['decoToggles', TOG_DECO]].forEach(([id, list]) => {
+      const box = $(id); box.innerHTML = '';
+      list.forEach(([k, fn]) => {
+        const b = document.createElement('button'); b.className = 'btn mini' + (u[k] ? ' on' : ''); b.textContent = fn(u);
+        b.onclick = () => { setUi({ [k]: !ui()[k] }); buildUiUI(); }; box.appendChild(b);
+      });
+    });
+    $('uiTs').value = u.ts; $('uiTsV').textContent = u.ts + ' %';
+    $('nFrom').value = u.nFrom; $('nFromV').textContent = hh(u.nFrom);
+    $('nTo').value = u.nTo; $('nToV').textContent = hh(u.nTo);
+    $('nAmt').value = u.nAmt; $('nAmtV').textContent = u.nAmt + ' %';
+    $('nightBox').style.display = u.night ? '' : 'none';
+  }
+  $('uiTs').oninput = e => { setUi({ ts: +e.target.value }); $('uiTsV').textContent = e.target.value + ' %'; };
+  $('nFrom').oninput = e => { setUi({ nFrom: +e.target.value }); $('nFromV').textContent = hh(e.target.value); };
+  $('nTo').oninput = e => { setUi({ nTo: +e.target.value }); $('nToV').textContent = hh(e.target.value); };
+  $('nAmt').oninput = e => { setUi({ nAmt: +e.target.value }); $('nAmtV').textContent = e.target.value + ' %'; };
+
+  /* ---------- Temas guardados ---------- */
+  const THEME_N = 3;
+  const styleName = id => (STYLES.find(x => x[0] === id) || ['', id])[1];
+  const fxName = id => (FX_MODES.find(x => x[0] === id) || ['', id])[1];
+  function buildThemes() {
+    const box = $('themes'); box.innerHTML = ''; const arr = store.get('themes', []);
+    for (let i = 0; i < THEME_N; i++) {
+      const t = arr[i], row = document.createElement('div'); row.className = 'prow';
+      const sp = document.createElement('span'); sp.textContent = 'Tema ' + (i + 1) + ': ' + (t ? t.label : 'vacío');
+      const act = document.createElement('div'); act.className = 'row';
+      const bs = document.createElement('button'); bs.className = 'btn mini'; bs.textContent = 'Guardar actual';
+      bs.onclick = () => {
+        const a = store.get('themes', []);
+        a[i] = { label: styleName(curStyle()) + ' · ' + fxName(FX.mode), colors: store.get('colors', {}), style: curStyle(), fx: FX.mode, bpm: bpmVal(), ui: ui() };
+        store.set('themes', a); buildThemes();
+      };
+      const bu = document.createElement('button'); bu.className = 'btn mini'; bu.textContent = 'Usar'; bu.disabled = !t;
+      bu.onclick = () => {
+        const th = store.get('themes', [])[i]; if (!th) return;
+        store.set('colors', th.colors || {}); store.set('style', th.style); store.set('bpm', th.bpm); store.set('ui', th.ui || {});
+        applyColors(); syncPickers(); applyStyle(); setFx(th.fx || 'off'); applyUi(); buildUiUI();
+      };
+      act.appendChild(bs); act.appendChild(bu); row.appendChild(sp); row.appendChild(act); box.appendChild(row);
+    }
+  }
+
   /* =====================  INICIO AUTOMÁTICO  ===================== */
   const autoOn = () => store.get('autoOn', true) !== false;
   async function refreshAuto() {
@@ -1169,8 +1403,8 @@ html[data-style=contraste] .lbl{display:block;font-size:max(2.6vmin,11px);font-w
 
   function fxResize() {
     const w = innerWidth, h = innerHeight, dpr = Math.min(window.devicePixelRatio || 1, 1.5);
-    [[fxBack, 1], [fxFront, dpr]].forEach(([cv, d]) => {
-      const W = Math.round(w * d), H = Math.round(h * d);
+    [[fxBack, 1], [fxFront, dpr], [$('fxEq'), 1]].forEach(([cv, d]) => {
+      const W = Math.round(w * d), H = Math.round(h * (cv.id === 'fxEq' ? 0.2 : 1) * d);
       if (cv.width !== W || cv.height !== H) { cv.width = W; cv.height = H; }
     });
   }
@@ -1185,7 +1419,7 @@ html[data-style=contraste] .lbl{display:block;font-size:max(2.6vmin,11px);font-w
     fxFront.getContext('2d').clearRect(0, 0, fxFront.width, fxFront.height);
     applyColors();                                         // restaura los colores elegidos
     FX.hueStep = -1;
-    if (m !== 'off') { fxResize(); FX.last = performance.now(); FX.raf = requestAnimationFrame(fxLoop); }
+    fxKick();
     buildFxUI();
   }
 
@@ -1196,6 +1430,8 @@ html[data-style=contraste] .lbl{display:block;font-size:max(2.6vmin,11px);font-w
     FX.last = now;
     if (playing) FX.beat += Math.min(dt, 0.2) * bpmVal() / 60;
     if (FX.mode === 'neon') drawNeon(now); else if (FX.mode === 'disco') drawDisco(now); else if (FX.mode === 'slime') drawSlime(dt, now);
+    if (UIc.eq) drawEq(now);
+    if (UIc.waves) pulseRings();
   }
 
   function drawNeon() {
@@ -1346,6 +1582,7 @@ html[data-style=contraste] .lbl{display:block;font-size:max(2.6vmin,11px);font-w
   updateLyInfo();
   LY.ready = loadLyricsIndex();
   setFx(store.get('fx', 'off'));
+  applyUi(); buildUiUI(); buildThemes();
   (async () => {
     if (native) {
       let ok = await loadNativeFolder();
