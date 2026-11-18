@@ -25,6 +25,10 @@ import com.getcapacitor.PluginMethod;
 import com.getcapacitor.annotation.ActivityCallback;
 import com.getcapacitor.annotation.CapacitorPlugin;
 
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 
 /**
@@ -234,6 +238,156 @@ public class MusicFolderPlugin extends Plugin {
             r.put("pos", pos);
             r.put("dur", dur);
             call.resolve(r);
+        });
+    }
+
+
+    /* ---------------- Letras (.lrc / .txt) ---------------- */
+
+    @PluginMethod
+    public void pickLyricsFolder(PluginCall call) {
+        Intent i = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
+        i.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION
+                | Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+                | Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION
+                | Intent.FLAG_GRANT_PREFIX_URI_PERMISSION);
+        startActivityForResult(call, i, "lyricsPickResult");
+    }
+
+    @ActivityCallback
+    private void lyricsPickResult(PluginCall call, ActivityResult result) {
+        if (call == null) return;
+        if (result.getResultCode() != Activity.RESULT_OK || result.getData() == null || result.getData().getData() == null) {
+            call.reject("cancelado");
+            return;
+        }
+        Uri tree = result.getData().getData();
+        boolean writable = true;
+        try {
+            getContext().getContentResolver().takePersistableUriPermission(tree,
+                    Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+        } catch (Exception e) {
+            writable = false;
+            try { getContext().getContentResolver().takePersistableUriPermission(tree, Intent.FLAG_GRANT_READ_URI_PERMISSION); } catch (Exception ignored) { }
+        }
+        String id = DocumentsContract.getTreeDocumentId(tree);
+        String name = id.contains(":") ? id.substring(id.indexOf(':') + 1) : id;
+        if (name.isEmpty()) name = "Almacenamiento interno";
+        JSObject o = new JSObject();
+        o.put("uri", tree.toString());
+        o.put("name", name);
+        o.put("writable", writable);
+        call.resolve(o);
+    }
+
+    @PluginMethod
+    public void listLyrics(final PluginCall call) {
+        final String s = call.getString("uri");
+        if (s == null) { call.reject("falta uri"); return; }
+        new Thread(() -> {
+            try {
+                Uri tree = Uri.parse(s);
+                JSArray out = new JSArray();
+                walkLyrics(tree, DocumentsContract.getTreeDocumentId(tree), out, 0);
+                JSObject r = new JSObject();
+                r.put("files", out);
+                call.resolve(r);
+            } catch (Exception e) {
+                call.reject("No se pudo leer la carpeta de letras: " + e.getMessage());
+            }
+        }).start();
+    }
+
+    private void walkLyrics(Uri tree, String docId, JSArray out, int depth) {
+        if (depth > MAX_DEPTH || out.length() >= MAX_TRACKS) return;
+        Uri children = DocumentsContract.buildChildDocumentsUriUsingTree(tree, docId);
+        Cursor c = null;
+        try {
+            c = getContext().getContentResolver().query(children, new String[]{
+                    DocumentsContract.Document.COLUMN_DOCUMENT_ID,
+                    DocumentsContract.Document.COLUMN_DISPLAY_NAME,
+                    DocumentsContract.Document.COLUMN_MIME_TYPE}, null, null, null);
+            if (c == null) return;
+            while (c.moveToNext() && out.length() < MAX_TRACKS) {
+                String id = c.getString(0), name = c.getString(1), mime = c.getString(2);
+                if (name == null) continue;
+                if (DocumentsContract.Document.MIME_TYPE_DIR.equals(mime)) {
+                    walkLyrics(tree, id, out, depth + 1);
+                } else {
+                    String low = name.toLowerCase(Locale.ROOT);
+                    if (low.endsWith(".lrc") || low.endsWith(".txt")) {
+                        JSObject t = new JSObject();
+                        t.put("uri", DocumentsContract.buildDocumentUriUsingTree(tree, id).toString());
+                        t.put("name", name);
+                        out.put(t);
+                    }
+                }
+            }
+        } finally {
+            if (c != null) c.close();
+        }
+    }
+
+    @PluginMethod
+    public void readText(final PluginCall call) {
+        final String s = call.getString("uri");
+        if (s == null) { call.reject("falta uri"); return; }
+        new Thread(() -> {
+            try (InputStream in = getContext().getContentResolver().openInputStream(Uri.parse(s))) {
+                if (in == null) { call.reject("no se pudo abrir"); return; }
+                ByteArrayOutputStream bo = new ByteArrayOutputStream();
+                byte[] buf = new byte[8192];
+                int n, total = 0;
+                while ((n = in.read(buf)) > 0 && total < 1_000_000) { bo.write(buf, 0, n); total += n; }
+                String txt = new String(bo.toByteArray(), StandardCharsets.UTF_8);
+                if (txt.startsWith("\uFEFF")) txt = txt.substring(1);
+                JSObject r = new JSObject();
+                r.put("text", txt);
+                call.resolve(r);
+            } catch (Exception e) {
+                call.reject("No se pudo leer: " + e.getMessage());
+            }
+        }).start();
+    }
+
+    /** Guarda texto. Si viene "uri" sobrescribe ese archivo; si no, crea "name" dentro de la carpeta "tree". */
+    @PluginMethod
+    public void writeText(final PluginCall call) {
+        final String fileUri = call.getString("uri");
+        final String tree = call.getString("tree");
+        final String name = call.getString("name");
+        final String text = call.getString("text", "");
+        new Thread(() -> {
+            try {
+                Uri target;
+                if (fileUri != null && !fileUri.isEmpty()) {
+                    target = Uri.parse(fileUri);
+                } else {
+                    if (tree == null || name == null) { call.reject("faltan datos"); return; }
+                    Uri t = Uri.parse(tree);
+                    Uri parent = DocumentsContract.buildDocumentUriUsingTree(t, DocumentsContract.getTreeDocumentId(t));
+                    target = DocumentsContract.createDocument(getContext().getContentResolver(), parent, "application/octet-stream", name);
+                    if (target == null) { call.reject("no se pudo crear el archivo"); return; }
+                }
+                try (OutputStream os = getContext().getContentResolver().openOutputStream(target, "wt")) {
+                    if (os == null) { call.reject("no se pudo escribir"); return; }
+                    os.write(text.getBytes(StandardCharsets.UTF_8));
+                }
+                JSObject r = new JSObject();
+                r.put("uri", target.toString());
+                call.resolve(r);
+            } catch (Exception e) {
+                call.reject("No se pudo guardar: " + e.getMessage());
+            }
+        }).start();
+    }
+
+    @PluginMethod
+    public void seek(PluginCall call) {
+        final int ms = call.getInt("ms", 0);
+        main.post(() -> {
+            try { if (mp != null) mp.seekTo(Math.max(0, ms)); } catch (IllegalStateException ignored) { }
+            call.resolve();
         });
     }
 
