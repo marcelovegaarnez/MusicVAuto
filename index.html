@@ -13,7 +13,7 @@
   --plomo:#808690; --plomo-osc:#1a1d22;
   --azul-a12:rgba(76,141,255,.12); --azul-a16:rgba(76,141,255,.16); --azul-a22:rgba(76,141,255,.22); --azul-a33:rgba(76,141,255,.33); --azul-a40:rgba(76,141,255,.4); --azul-a50:rgba(76,141,255,.5); --azul-a66:rgba(76,141,255,.66); --azul-a70:rgba(76,141,255,.7);
   --borde-a4:rgba(255,255,255,.04); --borde-a22:rgba(255,255,255,.22); --borde-a60:rgba(255,255,255,.6); --borde-a90:rgba(255,255,255,.9);
-  --ts:1; --D:56vmin; --Ds:44vmin; --pt:0px; --ps:0px; --pb:0px;
+  --ts:1; --lys:1; --D:56vmin; --Ds:44vmin; --pt:0px; --ps:0px; --pb:0px;
   --glass1:#101b30; --ink-a50:rgba(255,255,255,.5); --prog:0%;
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none}
@@ -47,7 +47,10 @@ html,body{margin:0;height:100%;color:var(--ink1);overflow:hidden;touch-action:ma
   stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .small .face.ico{width:5.6vmin;min-width:22px;height:5.6vmin;min-height:22px;object-fit:contain;border-radius:50%}
 .small.active{border-color:var(--azul);color:var(--ink2);box-shadow:0 0 22px var(--azul-a50),inset 0 1px 0 rgba(255,255,255,.2)}
-#gear{width:13vmin;min-width:54px;max-width:74px;padding:0}
+#gear,#bSearch,#bRandom,#bSeq{width:13vmin;min-width:54px;max-width:74px;padding:0}
+.lbl2{display:none}
+html.showtxt .lbl2{display:inline}
+html.showtxt #bRandom,html.showtxt #bSeq{width:auto;max-width:none;padding:0 18px}
 #gear .face.ico{width:62%;height:62%}
 
 /* Nombre de la canción: solo texto, junto a SECUENCIAL */
@@ -192,14 +195,36 @@ html[data-style=contraste] .lbl{display:block;font-size:max(2.6vmin,11px);font-w
 #themes{display:flex;flex-direction:column;gap:10px}
 #nightBox{display:flex;flex-direction:column;gap:10px}
 
+
+/* ---------- Buscador de canciones ---------- */
+#search{position:fixed;inset:0;z-index:12;display:flex;flex-direction:column;
+  background:radial-gradient(ellipse 90% 110% at 50% 115%,var(--glow) 0%,var(--bg1) 55%,var(--bg0) 100%)}
+#search[hidden]{display:none}
+#sqHead{display:flex;align-items:center;gap:10px;padding:max(10px,env(safe-area-inset-top)) max(18px,env(safe-area-inset-right)) 8px max(18px,env(safe-area-inset-left))}
+#sqIn{flex:1;min-width:0;height:54px;border-radius:27px;border:2px solid var(--azul);background:rgba(0,0,0,.45);color:var(--ink1);font:inherit;font-size:20px;
+  padding:0 22px;outline:none;box-shadow:0 0 18px var(--azul-a33);-webkit-user-select:text;user-select:text}
+#sqHead .btn{height:54px;border-width:2px;padding:0 20px;font-size:14px;font-weight:600;letter-spacing:.08em;flex:none;border-color:var(--plomo);color:var(--plomo)}
+#sqLetters{display:flex;flex-wrap:wrap;gap:6px;padding:0 max(18px,env(safe-area-inset-right)) 6px max(18px,env(safe-area-inset-left))}
+.sqL{min-width:40px;height:38px;padding:0 10px;border-radius:19px;border:1.5px solid var(--borde-a22);background:rgba(0,0,0,.35);color:var(--plomo);font:inherit;font-size:15px;font-weight:600;cursor:pointer}
+.sqL.on{border-color:var(--azul);color:var(--ink2);box-shadow:0 0 12px var(--azul-a40)}
+#sqCount{padding:2px max(18px,env(safe-area-inset-right)) 6px max(18px,env(safe-area-inset-left));color:var(--plomo);font-size:13px;min-height:22px}
+#sqList{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;display:flex;flex-direction:column;gap:4px;
+  padding:0 max(18px,env(safe-area-inset-right)) max(14px,env(safe-area-inset-bottom)) max(18px,env(safe-area-inset-left))}
+.sqrow{display:flex;align-items:center;justify-content:space-between;gap:14px;min-height:58px;padding:6px 18px;border-radius:18px;border:2px solid transparent;
+  font-size:calc(max(3.8vmin,18px) * var(--ts));color:var(--ink1);cursor:pointer;flex:none}
+.sqrow:active{background:var(--azul-a12)}
+.sqrow.now{border-color:var(--azul);background:var(--azul-a12);color:var(--ink2)}
+.sqrow span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sqrow small{flex:none;max-width:38%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--plomo);font-size:.62em;letter-spacing:.05em}
+
 /* ---------- Letra inferior ---------- */
 #app.hasBottom{grid-template-rows:auto minmax(0,1fr) auto}
 #bottom{display:flex;flex-direction:column;gap:6px;min-width:0}
-#lyric{display:flex;align-items:center;justify-content:center;gap:12px;min-height:max(8.5vmin,40px)}
+#lyric{display:flex;align-items:center;justify-content:center;gap:12px;min-height:max(11.5vmin,48px)}
 #lyric[hidden]{display:none}
-#lyricLine{flex:1;min-width:0;text-align:center;font-size:calc(max(4.6vmin,18px) * var(--ts));font-weight:500;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+#lyricLine{flex:1;min-width:0;text-align:center;font-size:calc(max(7.4vmin,30px) * var(--ts) * var(--lys));font-weight:500;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
   background:linear-gradient(90deg,var(--ink1),var(--ink2));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent}
-#lyricLine.dim{opacity:.6;font-size:calc(max(3.2vmin,13px) * var(--ts))}
+#lyricLine.dim{opacity:.6;font-size:calc(max(3.6vmin,15px) * var(--ts))}
 #lyricLine.pop{animation:lypop .35s ease-out}
 @keyframes lypop{from{opacity:.2;transform:translateY(5px)}to{opacity:1;transform:none}}
 #bLyEdit{flex:none;height:max(7vmin,38px);padding:0 16px;font-size:max(2.6vmin,11px);font-weight:600;letter-spacing:.14em;border-width:1.5px;border-color:var(--plomo);color:var(--plomo)}
@@ -270,21 +295,24 @@ html[data-style=contraste] .lbl{display:block;font-size:max(2.6vmin,11px);font-w
 
 <div id="app">
   <div id="top">
-    <button class="btn small" id="bRandom" aria-label="Modo aleatorio">
+    <button class="btn small" id="bRandom" aria-label="Modo aleatorio" title="Aleatorio">
       <svg viewBox="0 0 24 24"><path d="M16 3h5v5"/><path d="M4 20 21 3"/><path d="M21 16v5h-5"/><path d="m15 15 6 6"/><path d="M4 4l5 5"/></svg>
       <img class="face" alt="">
-      ALEATORIO
+      <span class="lbl2">ALEATORIO</span>
     </button>
-    <button class="btn small" id="bSeq" aria-label="Modo secuencial">
+    <button class="btn small" id="bSeq" aria-label="Modo secuencial" title="Secuencial">
       <svg viewBox="0 0 24 24"><path d="M3 6h13"/><path d="M3 12h13"/><path d="M3 18h9"/><path d="m17 15 5 3-5 3z" style="fill:currentColor"/></svg>
       <img class="face" alt="">
-      SECUENCIAL
+      <span class="lbl2">SECUENCIAL</span>
     </button>
     <div id="titleBox">
       <div id="cap">Ahora suena</div>
       <div id="title">Cargando…</div>
     </div>
     <div id="clock" hidden><div id="ckT"><span id="ckH">00</span><span class="ckc">:</span><span id="ckM">00</span><span id="ckAp"></span></div><div id="ckD"></div></div>
+    <button class="btn small" id="bSearch" aria-label="Buscar canción">
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l5 5"/></svg>
+    </button>
     <button class="btn small" id="gear" aria-label="Configuración">
       <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
       <img class="face" alt="">
@@ -363,6 +391,7 @@ html[data-style=contraste] .lbl{display:block;font-size:max(2.6vmin,11px);font-w
       <div class="kicker">Pantalla</div>
       <div id="uiToggles" class="row"></div>
       <label class="prow"><span>Tamaño de texto</span><input type="range" id="uiTs" min="80" max="140" step="5"><span class="pv" id="uiTsV"></span></label>
+      <label class="prow"><span>Tamaño de la letra</span><input type="range" id="uiLy" min="70" max="200" step="10"><span class="pv" id="uiLyV"></span></label>
     </section>
 
     <section>
@@ -447,6 +476,16 @@ html[data-style=contraste] .lbl{display:block;font-size:max(2.6vmin,11px);font-w
   <input type="file" id="dir" webkitdirectory multiple hidden>
   <input type="file" id="imgIn" accept="image/*" hidden>
   <input type="file" id="lyIn" webkitdirectory multiple hidden>
+</div>
+
+<div id="search" hidden>
+  <div id="sqHead">
+    <input id="sqIn" type="search" placeholder="Buscar canción…" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="search">
+    <button class="btn mini" id="sqClose">CERRAR</button>
+  </div>
+  <div id="sqLetters"></div>
+  <div id="sqCount"></div>
+  <div id="sqList"></div>
 </div>
 
 <div id="editor" hidden>
@@ -971,7 +1010,15 @@ html[data-style=contraste] .lbl{display:block;font-size:max(2.6vmin,11px);font-w
     if (el.textContent === txt && el.classList.contains('dim') === !!dim) return;
     el.textContent = txt; el.classList.toggle('dim', !!dim);
     el.classList.remove('pop'); void el.offsetWidth; el.classList.add('pop');
+    fitLyric();
   }
+  function fitLyric() {                                    // si la línea no cabe, reduce la letra poco a poco
+    const el = $('lyricLine'); el.style.fontSize = '';
+    if (el.classList.contains('dim') || !el.clientWidth) return;
+    const base = parseFloat(getComputedStyle(el).fontSize); let k = 1;
+    while (el.scrollWidth > el.clientWidth + 1 && k > 0.55) { k -= 0.05; el.style.fontSize = (base * k).toFixed(1) + 'px'; }
+  }
+  window.addEventListener('resize', () => requestAnimationFrame(fitLyric));
 
   async function readLyricText(key) {
     const ed = lyEdits();
@@ -1135,7 +1182,7 @@ html[data-style=contraste] .lbl{display:block;font-size:max(2.6vmin,11px);font-w
 
 
   /* =====================  PANTALLA: reloj, progreso, decoración, temas  ===================== */
-  const UI_DEF = { clock: true, h24: true, date: true, prog: true, eq: false, waves: false, trans: false, night: false, nFrom: 19, nTo: 6, nAmt: 30, ts: 100 };
+  const UI_DEF = { lbl: false, ly: 100, clock: true, h24: true, date: true, prog: true, eq: false, waves: false, trans: false, night: false, nFrom: 19, nTo: 6, nAmt: 30, ts: 100 };
   const ui = () => Object.assign({}, UI_DEF, store.get('ui', {}));
   let UIc = ui();
   function setUi(patch) { store.set('ui', Object.assign(ui(), patch)); applyUi(); }
@@ -1143,6 +1190,9 @@ html[data-style=contraste] .lbl{display:block;font-size:max(2.6vmin,11px);font-w
   function applyUi() {
     UIc = ui();
     document.documentElement.style.setProperty('--ts', UIc.ts / 100);
+    document.documentElement.style.setProperty('--lys', UIc.ly / 100);
+    fitLyric();
+    document.documentElement.classList.toggle('showtxt', !!UIc.lbl);
     $('clock').hidden = !UIc.clock;
     $('ckD').style.display = UIc.date ? '' : 'none';
     $('fxEq').style.display = UIc.eq ? 'block' : 'none';
@@ -1257,7 +1307,8 @@ html[data-style=contraste] .lbl{display:block;font-size:max(2.6vmin,11px);font-w
 
   /* ---------- Ajustes de pantalla / decoración ---------- */
   const TOG_SCREEN = [['clock', u => 'Reloj: ' + (u.clock ? 'sí' : 'no')], ['h24', u => 'Formato: ' + (u.h24 ? '24 h' : '12 h')],
-    ['date', u => 'Fecha: ' + (u.date ? 'sí' : 'no')], ['prog', u => 'Barra de progreso: ' + (u.prog ? 'sí' : 'no')]];
+    ['date', u => 'Fecha: ' + (u.date ? 'sí' : 'no')], ['prog', u => 'Barra de progreso: ' + (u.prog ? 'sí' : 'no')],
+    ['lbl', u => 'Texto en Aleatorio/Secuencial: ' + (u.lbl ? 'sí' : 'no')]];
   const TOG_DECO = [['eq', u => 'Ecualizador: ' + (u.eq ? 'sí' : 'no')], ['waves', u => 'Ondas en el fondo: ' + (u.waves ? 'sí' : 'no')],
     ['trans', u => 'Transición al cambiar: ' + (u.trans ? 'sí' : 'no')], ['night', u => 'Modo noche: ' + (u.night ? 'sí' : 'no')]];
   const hh = v => String(v).padStart(2, '0') + ':00';
@@ -1271,11 +1322,13 @@ html[data-style=contraste] .lbl{display:block;font-size:max(2.6vmin,11px);font-w
       });
     });
     $('uiTs').value = u.ts; $('uiTsV').textContent = u.ts + ' %';
+    $('uiLy').value = u.ly; $('uiLyV').textContent = u.ly + ' %';
     $('nFrom').value = u.nFrom; $('nFromV').textContent = hh(u.nFrom);
     $('nTo').value = u.nTo; $('nToV').textContent = hh(u.nTo);
     $('nAmt').value = u.nAmt; $('nAmtV').textContent = u.nAmt + ' %';
     $('nightBox').style.display = u.night ? '' : 'none';
   }
+  $('uiLy').oninput = e => { setUi({ ly: +e.target.value }); $('uiLyV').textContent = e.target.value + ' %'; };
   $('uiTs').oninput = e => { setUi({ ts: +e.target.value }); $('uiTsV').textContent = e.target.value + ' %'; };
   $('nFrom').oninput = e => { setUi({ nFrom: +e.target.value }); $('nFromV').textContent = hh(e.target.value); };
   $('nTo').oninput = e => { setUi({ nTo: +e.target.value }); $('nToV').textContent = hh(e.target.value); };
@@ -1306,6 +1359,59 @@ html[data-style=contraste] .lbl{display:block;font-size:max(2.6vmin,11px);font-w
       act.appendChild(bs); act.appendChild(bu); row.appendChild(sp); row.appendChild(act); box.appendChild(row);
     }
   }
+
+
+  /* =====================  BUSCADOR DE CANCIONES  ===================== */
+  const SQMAX = 120;
+  const sq = { q: '', letter: '', t: null };
+  const sqNorm = x => x.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+  function sqPrep(t) {                                     // texto de búsqueda de cada pista, calculado una sola vez
+    if (t._h) return;
+    const nm = cleanName(t.name);
+    t._h = sqNorm(nm + ' ' + (t.path || ''));
+    const c = (sqNorm(nm).match(/[a-z0-9]/) || ['#'])[0];
+    t._l = /[0-9]/.test(c) ? '#' : c;
+    const parts = String(t.path || '').split('/'); t._f = parts.length > 1 ? parts[parts.length - 2] : '';
+  }
+  function sqLetters() {
+    const box = $('sqLetters'); box.innerHTML = '';
+    const have = new Set(); tracks.forEach(t => { sqPrep(t); have.add(t._l); });
+    const mk = (label, val) => {
+      const b = document.createElement('button'); b.className = 'sqL' + (sq.letter === val ? ' on' : ''); b.textContent = label;
+      b.onclick = () => { sq.letter = (sq.letter === val ? '' : val); sqLetters(); sqRender(); }; box.appendChild(b);
+    };
+    mk('Todas', '');
+    [...have].sort().forEach(l => mk(l === '#' ? '0-9' : l.toUpperCase(), l));
+  }
+  function sqRender() {
+    const words = sqNorm(sq.q).split(/\s+/).filter(Boolean);
+    const rows = []; let total = 0;
+    for (let i = 0; i < tracks.length; i++) {
+      const t = tracks[i]; sqPrep(t);
+      if (sq.letter && t._l !== sq.letter) continue;
+      if (words.length && !words.every(w => t._h.indexOf(w) >= 0)) continue;
+      total++; if (rows.length < SQMAX) rows.push(i);
+    }
+    const box = $('sqList'); box.innerHTML = '';
+    rows.forEach(i => {
+      const t = tracks[i], r = document.createElement('div'); r.className = 'sqrow' + (i === cur ? ' now' : '');
+      const sp = document.createElement('span'); sp.textContent = cleanName(t.name); r.appendChild(sp);
+      if (t._f) { const sm = document.createElement('small'); sm.textContent = t._f; r.appendChild(sm); }
+      r.onclick = () => { closeSearch(); started = true; playIndex(i); };
+      box.appendChild(r);
+    });
+    $('sqCount').textContent = !tracks.length ? 'No hay canciones cargadas.' :
+      !total ? 'Sin resultados.' : (total > rows.length ? 'Mostrando ' + rows.length + ' de ' + total + '. Escribe más para afinar la búsqueda.' : total + (total === 1 ? ' canción' : ' canciones'));
+  }
+  function openSearch() {
+    sq.q = ''; sq.letter = ''; $('sqIn').value = '';
+    $('search').hidden = false; sqLetters(); sqRender();
+    setTimeout(() => { try { $('sqIn').focus(); } catch (e) {} }, 120);
+  }
+  function closeSearch() { $('search').hidden = true; try { $('sqIn').blur(); } catch (e) {} }
+  $('bSearch').onclick = openSearch;
+  $('sqClose').onclick = closeSearch;
+  $('sqIn').addEventListener('input', e => { sq.q = e.target.value; clearTimeout(sq.t); sq.t = setTimeout(sqRender, 120); });
 
   /* =====================  INICIO AUTOMÁTICO  ===================== */
   const autoOn = () => store.get('autoOn', true) !== false;
