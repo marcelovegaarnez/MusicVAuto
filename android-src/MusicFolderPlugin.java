@@ -466,6 +466,15 @@ public class MusicFolderPlugin extends Plugin {
     }
 
     @PluginMethod
+    public void bootInfo(PluginCall call) {
+        android.content.SharedPreferences sp = getContext().getSharedPreferences("automusica", Context.MODE_PRIVATE);
+        JSObject r = new JSObject();
+        r.put("boot", sp.getLong("lastBoot", 0L));
+        r.put("create", sp.getLong("lastCreate", 0L));
+        call.resolve(r);
+    }
+
+    @PluginMethod
     public void overlayStatus(PluginCall call) {
         boolean ok = Build.VERSION.SDK_INT < 23 || Settings.canDrawOverlays(getContext());
         JSObject r = new JSObject();

@@ -6,11 +6,21 @@ import android.webkit.WebView;
 import com.getcapacitor.BridgeActivity;
 
 public class MainActivity extends BridgeActivity {
+    /** true mientras la app está a la vista (lo usa BootReceiver para decidir si reintenta abrirla). */
+    public static volatile boolean visible = false;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         registerPlugin(MusicFolderPlugin.class);
         super.onCreate(savedInstanceState);
+        getSharedPreferences("automusica", MODE_PRIVATE).edit().putLong("lastCreate", System.currentTimeMillis()).apply();
     }
+
+    @Override
+    public void onResume() { super.onResume(); visible = true; }
+
+    @Override
+    public void onPause() { visible = false; super.onPause(); }
 
     /** Teclas que llegan a la app (volante, botones del equipo): se avisan a la página para usarlas o mostrarlas en la prueba. */
     @Override
